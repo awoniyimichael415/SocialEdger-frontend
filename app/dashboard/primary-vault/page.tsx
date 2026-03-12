@@ -29,7 +29,7 @@ export default function PrimaryVault() {
     },
   });
 
-  const ownsMembership = balance && Number(balance) > 0;
+  const ownsMembership = Boolean(balance && Number(balance) > 0);
 
   // Fetch reputation from backend
   useEffect(() => {
