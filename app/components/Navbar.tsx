@@ -14,7 +14,56 @@ export default function Navbar() {
   const { disconnect } = useDisconnect();
 
   const connectWallet = () => {
-    connect({ connector: injected() });
+
+    if (typeof window === "undefined") return;
+
+    const isMobile =
+      /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+    const hasMetaMask =
+      typeof (window as any).ethereum !== "undefined";
+
+    // If MetaMask exists → connect normally
+    if (hasMetaMask) {
+      connect({ connector: injected() });
+      return;
+    }
+
+    // If mobile browser → try open MetaMask app
+    if (isMobile) {
+
+      const dappUrl = window.location.href.replace(
+        /^https?:\/\//,
+        ""
+      );
+
+      const metamaskLink =
+        `https://metamask.app.link/dapp/${dappUrl}`;
+
+      window.location.href = metamaskLink;
+
+      // fallback to store
+      setTimeout(() => {
+
+        const isIOS =
+          /iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+        if (isIOS) {
+          window.location.href =
+            "https://apps.apple.com/app/metamask/id1438144202";
+        } else {
+          window.location.href =
+            "https://play.google.com/store/apps/details?id=io.metamask";
+        }
+
+      }, 2000);
+
+      return;
+    }
+
+    // Desktop without MetaMask
+    window.location.href =
+      "https://metamask.io/download/";
   };
 
   return (
