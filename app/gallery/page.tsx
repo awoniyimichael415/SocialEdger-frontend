@@ -109,7 +109,7 @@ export default function GalleryPage() {
         abi: CONTRACT_DATA.MembershipNFT.abi,
         functionName: "publicMint",
         args: [tokenId],
-        value: mintPrice,
+        value: BigInt(mintPrice),
       });
     } catch (err: any) {
       console.error(err);
