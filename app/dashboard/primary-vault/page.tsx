@@ -40,7 +40,7 @@ export default function PrimaryVault() {
         setLoadingRep(true);
 
         const res = await fetch(
-          `http://localhost:5000/api/reputation/${address}`
+          `https://socialedger-backend.onrender.com/api/reputation/${address}`
         );
 
         const data = await res.json();
