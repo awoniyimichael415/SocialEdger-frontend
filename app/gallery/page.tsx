@@ -12,6 +12,8 @@ import { formatEther } from "viem";
 import { CONTRACTS as ADDRESS } from "@/src/contracts/config";
 import { CONTRACTS as CONTRACT_DATA } from "@/src/lib/contracts";
 
+import INFTOAgreementModal from "@/app/components/INFTOAgreementModal";
+
 type NFT = {
   id: number;
   name: string;
@@ -24,6 +26,10 @@ const METADATA_BASE =
 
 const NFTs_PER_PAGE = 30;
 
+const API =
+  process.env.NEXT_PUBLIC_BACKEND_URL ||
+  "http://localhost:5000";
+
 export default function GalleryPage() {
   const { address, isConnected } = useAccount();
 
@@ -33,7 +39,11 @@ export default function GalleryPage() {
   const [message, setMessage] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
-  const { writeContract, data: hash, error } = useWriteContract();
+  const [showAgreement, setShowAgreement] = useState(false);
+  const [pendingMintToken, setPendingMintToken] =
+    useState<number | null>(null);
+
+  const { writeContract, data: hash } = useWriteContract();
   const { isLoading: txLoading, isSuccess } =
     useWaitForTransactionReceipt({ hash });
 
@@ -89,16 +99,8 @@ export default function GalleryPage() {
     startIndex + NFTs_PER_PAGE
   );
 
-  const mintNFT = async (tokenId: number) => {
-    if (!isConnected || !address) {
-      setMessage("Connect wallet first.");
-      return;
-    }
-
-    if (!mintPrice) {
-      setMessage("Unable to read mint price.");
-      return;
-    }
+  const executeMint = async (tokenId: number) => {
+    if (!mintPrice) return;
 
     try {
       setMessage("");
@@ -118,6 +120,45 @@ export default function GalleryPage() {
     }
   };
 
+  const mintNFT = async (tokenId: number) => {
+    if (!isConnected || !address) {
+      setMessage("Connect wallet first.");
+      return;
+    }
+
+    if (!mintPrice) {
+      setMessage("Unable to read mint price.");
+      return;
+    }
+
+    try {
+      const res = await fetch(
+        `${API}/api/agreement/check/${address}`
+      );
+
+      const data = await res.json();
+
+      if (!data.exists) {
+        setPendingMintToken(tokenId);
+        setShowAgreement(true);
+        return;
+      }
+
+      executeMint(tokenId);
+    } catch (err) {
+      console.error(err);
+      setMessage("Agreement check failed.");
+    }
+  };
+
+  const handleAgreementAccepted = () => {
+    setShowAgreement(false);
+
+    if (pendingMintToken !== null) {
+      executeMint(pendingMintToken);
+    }
+  };
+
   useEffect(() => {
     if (isSuccess) {
       setMessage("🎉 Mint successful!");
@@ -132,7 +173,15 @@ export default function GalleryPage() {
       </h1>
 
       {message && (
-        <div className="mb-6 text-yellow-400">{message}</div>
+        <div className="mb-6 text-yellow-400">
+          {message}
+        </div>
+      )}
+
+      {showAgreement && (
+        <INFTOAgreementModal
+          onAccepted={handleAgreementAccepted}
+        />
       )}
 
       {loading ? (
@@ -181,7 +230,9 @@ export default function GalleryPage() {
           <div className="flex justify-center items-center gap-6 mt-10">
             <button
               onClick={() =>
-                setCurrentPage((prev) => Math.max(prev - 1, 1))
+                setCurrentPage((prev) =>
+                  Math.max(prev - 1, 1)
+                )
               }
               disabled={currentPage === 1}
               className="btn-outline"

@@ -2,6 +2,7 @@ import "./globals.css";
 import { Space_Grotesk } from "next/font/google";
 import Navbar from "./components/Navbar";
 import { Web3Provider } from "@/src/lib/wagmi-provider";
+import KYCGate from "./components/KYCGate";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -24,6 +25,7 @@ export default function RootLayout({
         {/* 🔗 Web3 Provider (REQUIRED for Wagmi hooks in dashboard & vaults) */}
         <Web3Provider>
           <Navbar />
+          <KYCGate />
           <div className="pt-20">{children}</div>
         </Web3Provider>
       </body>
