@@ -1,6 +1,9 @@
+"use client";
+
 // 🎬 CINEMATIC SECTION (FINAL PERFECT VERSION)
 import { motion } from "framer-motion";
-function SectionMotion({
+
+export default function SectionMotion({
   children,
   character,
   direction = "left",
@@ -36,29 +39,25 @@ function SectionMotion({
           src={character}
           alt="character"
 
-          // 🔥 appear AFTER content
+          // 🔥 ENTRY ANIMATION
           initial={{ opacity: 0, scale: 0.8 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: false }}
 
+          // 🔥 COMBINED TRANSITION (FIXED)
           transition={{
             delay: 0.8,
-            duration: 1.2,
-            ease: "easeOut",
+            duration: 8,
+            ease: "easeInOut",
+            repeat: Infinity,
           }}
 
-          // 🔥 CINEMATIC FLOAT (REAL FIX)
+          // 🔥 FLOATING ANIMATION
           animate={{
             y: [0, -30, 15, -20, 0],
             x: [0, 20, -15, 10, 0],
             rotate: [0, 3, -3, 2, 0],
             scale: [1, 1.03, 0.98, 1.02, 1],
-          }}
-
-          transition={{
-            duration: 8,
-            repeat: Infinity,
-            ease: "easeInOut",
           }}
 
           className={`
