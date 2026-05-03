@@ -1,4 +1,5 @@
 // 🎬 CINEMATIC SECTION (FINAL PERFECT VERSION)
+import { motion } from "framer-motion";
 function SectionMotion({
   children,
   character,
