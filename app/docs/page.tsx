@@ -1,77 +1,83 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
 
-export default function DocsPage() {
+type Post = {
+  _id: string;
+  title: string;
+  slug: string;
+  category: string;
+};
+
+export default function ContentHub() {
+  const [blog, setBlog] = useState<Post[]>([]);
+  const [articles, setArticles] = useState<Post[]>([]);
+  const [resources, setResources] = useState<Post[]>([]);
+
+  useEffect(() => {
+    fetchPosts("blog", setBlog);
+    fetchPosts("article", setArticles);
+    fetchPosts("resource", setResources);
+  }, []);
+
+  const fetchPosts = async (category: string, setter: any) => {
+    const res = await fetch(
+      `http://localhost:5000/api/posts?category=${category}`
+    );
+    const data = await res.json();
+    setter(data.slice(0, 3)); // latest 3
+  };
+
+  const renderSection = (title: string, color: string, posts: Post[], link: string) => (
+    <div className="p-8 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl">
+
+      <h2 className={`text-2xl font-bold mb-4 ${color}`}>
+        {title}
+      </h2>
+
+      <div className="space-y-3 mb-6">
+        {posts.map((post) => (
+          <Link key={post._id} href={`/content/${post.category}/${post.slug}`}>
+            <p className="text-white/80 hover:text-white cursor-pointer">
+              • {post.title}
+            </p>
+          </Link>
+        ))}
+      </div>
+
+      <Link href={link}>
+        <button className="hover:underline text-white/60">
+          View All →
+        </button>
+      </Link>
+
+    </div>
+  );
+
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen bg-[#0a0a0f] text-white px-6 md:px-16 py-24">
 
       {/* HERO */}
-      <section className="section text-center max-w-5xl mx-auto">
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl">
-          SocialEdger Documentation
+      <section className="text-center mb-20">
+        <h1 className="text-5xl md:text-6xl font-extrabold">
+          <span className="bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+            Knowledge Hub
+          </span>
         </h1>
-        <p className="hero-sub text-gray-300 mt-6 max-w-3xl mx-auto">
-          Transparency and structure power the SocialEdger ecosystem.
-        </p>
       </section>
 
-      <section className="section max-w-6xl mx-auto grid md:grid-cols-2 gap-10">
+      {/* GRID */}
+      <section className="grid md:grid-cols-3 gap-10 max-w-6xl mx-auto">
 
-        {/* TOKENOMICS */}
-        <div className="glass-card p-8">
-          <h2 className="text-2xl font-semibold mb-3">Tokenomics</h2>
-          <p className="text-gray-300 mb-6">
-            Token supply, allocation, presale structure, and ecosystem utility.
-          </p>
-          <Link href="/docs/tokenomics">
-            <button className="btn-outline">Learn More</button>
-          </Link>
-        </div>
+        {renderSection("Blog", "text-cyan-400", blog, "/content/blog")}
 
-        {/* REPUTATION */}
-        <div className="glass-card p-8">
-          <h2 className="text-2xl font-semibold mb-3">Proof of Reputation</h2>
-          <p className="text-gray-300 mb-6">
-            Reputation-based ranking system replacing traditional gatekeeping.
-          </p>
-          <Link href="/reputation">
-            <button className="btn-outline">Learn More</button>
-          </Link>
-        </div>
+        {renderSection("Articles", "text-purple-400", articles, "/content/articles")}
 
-        {/* MEMBERSHIP */}
-        <div className="glass-card p-8">
-          <h2 className="text-2xl font-semibold mb-3">Membership System</h2>
-          <p className="text-gray-300 mb-6">
-            NFT membership, shared membership, and vault structure.
-          </p>
-          <Link href="/membership">
-            <button className="btn-outline">Learn More</button>
-          </Link>
-        </div>
-
-        {/* ROADMAP */}
-        <div className="glass-card p-8">
-          <h2 className="text-2xl font-semibold mb-3">Roadmap</h2>
-          <p className="text-gray-300 mb-6">
-            Development phases and ecosystem expansion.
-          </p>
-          <Link href="/docs/roadmap">
-            <button className="btn-outline">Learn More</button>
-          </Link>
-        </div>
-
-        {/* INFTO */}
-        <div className="glass-card p-8 md:col-span-2">
-          <h2 className="text-2xl font-semibold mb-3">INFTO Agreement</h2>
-          <p className="text-gray-300 mb-6">
-            Participation agreement and ecosystem terms.
-          </p>
-          <Link href="/docs/infto">
-            <button className="btn-outline">Learn More</button>
-          </Link>
-        </div>
+        {renderSection("Resources", "text-pink-400", resources, "/content/resources")}
 
       </section>
+
     </main>
   );
 }

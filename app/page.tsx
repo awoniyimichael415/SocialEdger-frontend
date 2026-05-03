@@ -3,9 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import Web3Background from "./components/Web3Background";
-import CharacterParallax from "./components/CharacterParallax";
-import HeroCharacter from "./components/HeroCharacter";
+import SpaceScene from "./components/SpaceScene";
 
 type NFT = {
   name: string;
@@ -18,6 +16,9 @@ const METADATA_BASE =
 export default function Home() {
   const [nfts, setNfts] = useState<NFT[]>([]);
 
+  // 🎯 CUSTOM CURSOR STATE
+  const [mouse, setMouse] = useState({ x: 0, y: 0 });
+
   useEffect(() => {
     const loadNFTs = async () => {
       const items: NFT[] = [];
@@ -29,10 +30,7 @@ export default function Home() {
 
           items.push({
             name: meta.name,
-            image: meta.image.replace(
-              "ipfs://",
-              "https://ipfs.io/ipfs/"
-            ),
+            image: meta.image.replace("ipfs://", "https://ipfs.io/ipfs/"),
           });
         } catch {}
       }
@@ -41,397 +39,288 @@ export default function Home() {
     };
 
     loadNFTs();
+
+    // 🎯 CURSOR TRACK
+    const move = (e: MouseEvent) => {
+      setMouse({ x: e.clientX, y: e.clientY });
+    };
+
+    window.addEventListener("mousemove", move);
+    return () => window.removeEventListener("mousemove", move);
   }, []);
 
-  const fade = {
-    hidden: { opacity: 0, y: 180 },
-    show: { opacity: 1, y: 0, transition: { duration: 1.5 } },
+  // 🎬 FLOATING ANIMATION
+  const floatAnimation = {
+    animate: {
+      y: [0, -30, 15, -20, 0],
+      x: [0, 20, -15, 10, 0],
+      rotate: [0, 3, -3, 2, 0],
+      scale: [1, 1.03, 0.98, 1.02, 1],
+    },
+    transition: {
+      duration: 8,
+      repeat: Infinity,
+      ease: "easeInOut",
+    },
+  };
+
+  // 🎯 STRONG REVEAL
+  const revealLeft = {
+    initial: { opacity: 0, x: -250, scale: 0.95 },
+    whileInView: { opacity: 1, x: 0, scale: 1 },
+    transition: { duration: 1.2 },
+  };
+
+  const revealRight = {
+    initial: { opacity: 0, x: 250, scale: 0.95 },
+    whileInView: { opacity: 1, x: 0, scale: 1 },
+    transition: { duration: 1.2 },
   };
 
   return (
-    <main className="relative min-h-screen px-6 md:px-16 lg:px-24 overflow-hidden">
-      
-      <Web3Background />
-      <CharacterParallax />
+    <main className="relative min-h-screen overflow-hidden bg-[#0a0a0f] text-white cursor-none">
 
-      {/* Glow Effects */}
-      <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
+      <SpaceScene />
 
-        <div className="absolute w-[500px] h-[500px] bg-purple-600/20 blur-[120px] rounded-full animate-pulse top-20 left-20"></div>
+      {/* 🔥 CUSTOM CURSOR */}
+      <motion.div
+        className="fixed top-0 left-0 w-6 h-6 rounded-full pointer-events-none z-[9999]"
+        animate={{
+          x: mouse.x - 12,
+          y: mouse.y - 12,
+        }}
+        transition={{ type: "spring", stiffness: 200, damping: 20 }}
+        style={{
+          background:
+            "radial-gradient(circle, rgba(0,255,255,0.9) 0%, rgba(255,0,200,0.6) 40%, transparent 70%)",
+          boxShadow: "0 0 25px rgba(0,255,255,0.6)",
+        }}
+      />
 
-        <div className="absolute w-[400px] h-[400px] bg-pink-600/20 blur-[120px] rounded-full animate-pulse bottom-20 right-20"></div>
+      {/* ================= HERO ================= */}
+      <section className="relative min-h-screen flex flex-col justify-center items-center text-center z-10 px-6">
 
-      </div>
+        <h1 className="text-[14vw] leading-none font-extrabold tracking-tight">
+          <span className="block bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 bg-clip-text text-transparent animate-pulse">
+            SOCIAL
+          </span>
+          <span className="block bg-gradient-to-r from-pink-500 via-cyan-400 to-purple-500 bg-clip-text text-transparent animate-pulse">
+            EDGER
+          </span>
+        </h1>
 
-      {/* HERO */}
-      <section className="relative py-28 max-w-7xl mx-auto grid md:grid-cols-2 gap-16 items-center">
+        <p className="mt-6 text-gray-300 max-w-2xl text-lg">
+          A futuristic reputation-powered Web3 ecosystem where identity,
+          ownership, and opportunity converge.
+        </p>
 
-        <motion.div
-          variants={fade}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true }}
-        >
+      </section>
 
-          <h1 className="text-5xl lg:text-6xl leading-tight">
-            Where Reputation <br /> Meets Opportunity
-          </h1>
+      {/* ================= STORY ================= */}
+      <section className="min-h-screen flex items-center px-6 max-w-6xl mx-auto z-10">
 
-          <p className="mt-6 text-[22px] text-gray-300 max-w-xl">
-            SocialEdger is a Web3 ecosystem where contributors,
-            communities and innovators grow through verified
-            reputation, NFT memberships and decentralized
-            participation.
-          </p>
+        <div className="grid md:grid-cols-2 gap-16 items-center w-full">
 
-          <div className="mt-10 flex gap-6 flex-wrap">
+          <motion.div {...revealLeft}>
+            <h2 className="text-4xl font-bold mb-6 text-cyan-400">
+              A Reputation Driven Economy
+            </h2>
+            <p className="text-gray-300">
+              SocialEdger introduces a decentralized participation economy
+              where reputation becomes measurable digital capital.
+            </p>
+          </motion.div>
 
-            <Link href="/membership">
-              <button className="px-8 py-3 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 hover:scale-105 transition">
-                Explore Membership
-              </button>
-            </Link>
+          <div className="relative h-[420px] rounded-3xl bg-gradient-to-br from-cyan-500/20 to-purple-500/20 border border-white/10 overflow-hidden">
 
-            <Link href="/presale">
-              <button className="px-8 py-3 rounded-full border border-white/30 hover:bg-white/10 transition">
-                Join Presale
-              </button>
-            </Link>
+            <motion.img
+              src="/parallax/ai-guide-3.png"
+              className="absolute bottom-0 right-0 w-[115%]"
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.8, duration: 1.2 }}
+              {...floatAnimation}
+            />
 
           </div>
 
-        </motion.div>
+        </div>
+      </section>
+
+      {/* ================= WHAT ================= */}
+      <section className="min-h-screen flex items-center px-6 max-w-6xl mx-auto z-10">
+
+        <div className="grid md:grid-cols-2 gap-16 items-center w-full">
+
+          <div className="relative h-[420px] rounded-3xl bg-gradient-to-br from-pink-500/20 to-cyan-500/20 border border-white/10 overflow-hidden">
+
+            <motion.img
+              src="/parallax/ai-guide-2.png"
+              className="absolute bottom-0 left-0 w-[130%]"
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.8, duration: 1.2 }}
+              {...floatAnimation}
+            />
+
+          </div>
+
+          <motion.div
+            {...revealRight}
+            className="p-8 bg-white/5 backdrop-blur-2xl border border-white/10 rounded-3xl"
+          >
+            <h2 className="text-3xl font-semibold mb-4 text-pink-400">
+              What is SocialEdger?
+            </h2>
+
+            <p className="text-gray-300">
+              A global network where contribution defines access,
+              and reputation becomes currency.
+            </p>
+          </motion.div>
+
+        </div>
+      </section>
+
+      {/* ================= FEATURES ================= */}
+      <section className="min-h-screen flex flex-col justify-center px-6 max-w-6xl mx-auto z-10">
 
         <motion.div
-          variants={fade}
-          initial="hidden"
-          whileInView="show"
+          initial={{ opacity: 0, y: 120 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
         >
-          <HeroCharacter />
+          <h2 className="text-4xl text-center mb-16 text-purple-400">
+            Platform Foundations
+          </h2>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+
+            {[
+              "NFT-Based Membership",
+              "Shared Membership System",
+              "Proof of Reputation",
+              "Token Presale",
+              "Contributor Portfolios",
+              "Dual Membership Vaults"
+            ].map((item) => (
+              <motion.div
+                key={item}
+                whileHover={{ y: -10 }}
+                className="
+                  p-[1px] rounded-2xl
+                  bg-gradient-to-br from-white/20 to-white/5
+                "
+              >
+                <div className="p-6 rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10">
+                  <h3 className="text-xl text-cyan-300">{item}</h3>
+                </div>
+              </motion.div>
+            ))}
+
+          </div>
         </motion.div>
 
       </section>
 
-      {/* STORY */}
-      <motion.section
-        data-character="1"
-        className="relative z-10 py-32 max-w-6xl mx-auto grid md:grid-cols-2 gap-16 items-center"
-        variants={fade}
-        initial="hidden"
-        whileInView="show"
-      >
+      {/* ================= NFT (GLASS FIXED) ================= */}
+      <section className="py-32 max-w-6xl mx-auto z-10 px-6">
 
-        <div className="rounded-3xl bg-gradient-to-br from-purple-600/30 to-blue-600/30 h-80 border border-white/10"></div>
-
-        <div>
-
-          <h2 className="text-4xl font-semibold mb-6">
-            A Reputation Driven Economy
-          </h2>
-
-          <p className="text-gray-300 leading-relaxed">
-            SocialEdger introduces a decentralized participation
-            economy where reputation becomes measurable digital
-            capital. Through Proof-of-Reputation, individuals earn
-            opportunity based on real contributions.
-          </p>
-
-        </div>
-
-      </motion.section>
-
-      {/* WHAT IS SOCIALEDGER */}
-      <motion.section
-        data-character="2"
-        className="relative z-10 py-24 max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center"
-        variants={fade}
-        initial="hidden"
-        whileInView="show"
-      >
-
-        <div className="rounded-3xl bg-white/5 backdrop-blur-lg p-8 border border-white/10">
-
-          <h2 className="text-3xl font-semibold mb-4">
-            What is SocialEdger?
-          </h2>
-
-          <p className="text-gray-300">
-            SocialEdger connects global participants into a
-            reputation-driven digital network. Opportunity
-            is earned through participation and contribution.
-          </p>
-
-        </div>
-
-        <div className="rounded-3xl bg-gradient-to-br from-purple-600/30 to-pink-600/30 h-72 md:h-96"></div>
-
-      </motion.section>
-
-      {/* PLATFORM FOUNDATIONS */}
-      <motion.section
-        data-character="3"
-        className="relative z-10 py-32 max-w-6xl mx-auto grid md:grid-cols-2 gap-16"
-        variants={fade}
-        initial="hidden"
-        whileInView="show"
-      >
-
-        <h2 className="text-3xl font-semibold text-center mb-16">
-          Platform Foundations
-        </h2>
-
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-
-          {[
-            "NFT-Based Membership",
-            "Shared Membership System",
-            "Proof of Reputation",
-            "Token Presale",
-            "Contributor Portfolios",
-            "Dual Membership Vaults"
-          ].map((item) => (
-
-            <div
-              key={item}
-              className="p-6 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition hover:-translate-y-1"
-            >
-              <h3 className="text-xl font-semibold">
-                {item}
-              </h3>
-            </div>
-
-          ))}
-
-        </div>
-
-      </motion.section>
-
-      {/* NFT MEMBERSHIP */}
-      <motion.section
-        className="py-32 max-w-6xl mx-auto grid md:grid-cols-2 gap-16"
-        variants={fade}
-        initial="hidden"
-        whileInView="show"
-      >
-
-        <div>
-
-          <h2 className="text-4xl font-semibold mb-6">
-            NFT Powered Membership
-          </h2>
-
-          <p className="text-gray-300 mb-6">
-            Membership NFTs unlock powerful advantages inside
-            the SocialEdger ecosystem including accelerated
-            mining rewards and governance participation.
-          </p>
-
-          <ul className="space-y-3 text-gray-400">
-            <li>✔ 5× Token Mining Power</li>
-            <li>✔ Shared Membership System</li>
-            <li>✔ Reputation Acceleration</li>
-            <li>✔ Governance Access</li>
-          </ul>
-
-        </div>
-
-        <div className="rounded-3xl bg-gradient-to-br from-pink-600/30 to-purple-600/30 h-96 border border-white/10"></div>
-
-      </motion.section>
-
-      {/* NFT PREVIEW */}
-      <motion.section
-        className="py-24 max-w-6xl mx-auto"
-        variants={fade}
-        initial="hidden"
-        whileInView="show"
-      >
-
-        <h2 className="text-3xl font-semibold text-center mb-16">
+        <motion.h2
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          className="text-4xl text-center mb-16 text-pink-400"
+        >
           Featured Membership NFTs
-        </h2>
+        </motion.h2>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
 
           {nfts.map((nft, i) => (
-
-            <div
+            <motion.div
               key={i}
-              className="glass-card p-4 hover:scale-105 transition"
+              initial={{ opacity: 0, y: 80, scale: 0.9 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ delay: i * 0.1 }}
+              whileHover={{ y: -12 }}
+              className="p-[1px] rounded-3xl bg-gradient-to-br from-white/20 to-white/5"
             >
 
-              <img
-                src={nft.image}
-                alt={nft.name}
-                className="rounded-xl mb-4 w-full h-64 object-cover"
-              />
+              <div className="p-4 rounded-3xl bg-white/5 backdrop-blur-2xl border border-white/10">
 
-              <h3 className="text-lg font-semibold">
-                {nft.name}
-              </h3>
+                <div className="overflow-hidden rounded-xl mb-4">
+                  <motion.img
+                    src={nft.image}
+                    className="w-full h-64 object-cover"
+                    whileHover={{ scale: 1.1 }}
+                  />
+                </div>
 
-            </div>
+                <h3 className="text-white">{nft.name}</h3>
 
+              </div>
+
+            </motion.div>
           ))}
 
         </div>
 
-        <div className="text-center mt-12">
+      </section>
 
-          <Link href="/gallery">
+      {/* ================= ECOSYSTEM ================= */}
+      <section className="py-32 max-w-6xl mx-auto z-10 px-6">
 
-            <button className="px-10 py-4 rounded-full bg-gradient-to-r from-purple-600 to-blue-500 hover:scale-105 transition">
-              See Full Gallery
-            </button>
-
-          </Link>
-
-        </div>
-
-      </motion.section>
-
-      {/* ROADMAP */}
-      <motion.section
-        className="py-32 max-w-6xl mx-auto"
-        variants={fade}
-        initial="hidden"
-        whileInView="show"
-      >
-
-        <h2 className="text-4xl text-center mb-24">
-          SocialEdger Roadmap
-        </h2>
-
-        <div className="relative">
-
-          {/* CENTER LINE */}
-          <div className="absolute left-1/2 transform -translate-x-1/2 w-[8px] bg-purple-500/40 h-full"></div>
-
-          <div className="space-y-32">
-
-            {[
-              {
-                phase:"Phase 1",
-                title:"Foundation",
-                desc:"Launch NFT membership and reputation system"
-              },
-              {
-                phase:"Phase 2",
-                title:"Mining Economy",
-                desc:"Deploy token mining system with 5× multiplier"
-              },
-              {
-                phase:"Phase 3",
-                title:"Ecosystem Expansion",
-                desc:"Contributor network and DAO governance"
-              },
-              {
-                phase:"Phase 4",
-                title:"Global Network",
-                desc:"Open participation platform globally"
-              }
-            ].map((item,i)=>(
-              <div
-                key={i}
-                className={`flex items-center w-full ${
-                  i % 2 === 0 ? "justify-start" : "justify-end"
-                }`}
-              >
-
-                {i % 2 === 1 && (
-                  <div className="w-1/2 pr-12 text-right">
-                    <div className="glass-card p-6">
-                      <h3 className="text-purple-400">{item.phase}</h3>
-                      <h4 className="text-xl font-semibold">{item.title}</h4>
-                      <p className="text-gray-400">{item.desc}</p>
-                    </div>
-                  </div>
-                )}
-
-                <div className="relative z-10 w-8 h-8 bg-purple-600 rounded-full border-4 border-black"></div>
-
-                {i % 2 === 0 && (
-                  <div className="w-1/2 pl-12">
-                    <div className="glass-card p-6">
-                      <h3 className="text-purple-400">{item.phase}</h3>
-                      <h4 className="text-xl font-semibold">{item.title}</h4>
-                      <p className="text-gray-400">{item.desc}</p>
-                    </div>
-                  </div>
-                )}
-
-              </div>
-            ))}
-
-          </div>
-
-        </div>
-
-      </motion.section>
-
-      {/* ECOSYSTEM */}
-      <motion.section
-        className="py-32 max-w-6xl mx-auto"
-        variants={fade}
-        initial="hidden"
-        whileInView="show"
-      >
-
-        <h2 className="text-4xl text-center mb-16">
-          The SocialEdger Ecosystem
-        </h2>
+        <motion.h2
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          className="text-4xl text-center mb-16 text-purple-400"
+        >
+          Ecosystem
+        </motion.h2>
 
         <div className="grid md:grid-cols-3 gap-10">
 
           {[
-            {
-              title:"Reputation Engine",
-              desc:"Transparent scoring measuring real participation."
-            },
-            {
-              title:"Contributor Network",
-              desc:"Global collaboration between creators."
-            },
-            {
-              title:"Token Economy",
-              desc:"Mining powered reward economy."
-            }
-          ].map((item,i)=>(
-            <div key={i} className="glass-card p-8 text-center">
-              <h3 className="text-xl mb-3">{item.title}</h3>
-              <p className="text-gray-400">{item.desc}</p>
-            </div>
+            "Reputation Engine",
+            "Contributor Network",
+            "Token Economy"
+          ].map((item, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 80 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              whileHover={{ y: -10 }}
+              className="p-8 text-center bg-white/5 backdrop-blur-2xl border border-white/10 rounded-3xl"
+            >
+              <h3 className="text-xl text-cyan-300">{item}</h3>
+            </motion.div>
           ))}
 
         </div>
 
-      </motion.section>
+      </section>
 
-      {/* CTA */}
-      <motion.section
-        className="py-24 text-center max-w-4xl mx-auto"
-        variants={fade}
-        initial="hidden"
-        whileInView="show"
-      >
+      {/* ================= CTA ================= */}
+      <section className="py-32 text-center z-10 px-6">
 
-        <h2 className="text-3xl font-semibold mb-6">
-          Join the SocialEdger Ecosystem
-        </h2>
+        <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}>
+          <h2 className="text-4xl mb-6 text-pink-400">
+            Join SocialEdger
+          </h2>
 
-        <p className="text-gray-400 mb-10">
-          Participate, contribute and grow your digital reputation.
-        </p>
+          <Link href="/gallery">
+            <button className="px-10 py-4 rounded-full bg-gradient-to-r from-cyan-500 to-pink-500 hover:scale-110 transition">
+              Get Started
+            </button>
+          </Link>
+        </motion.div>
 
-        <Link href="/membership">
+      </section>
 
-          <button className="px-10 py-4 rounded-full bg-gradient-to-r from-purple-600 to-blue-500 hover:scale-105 transition">
-            Get Started
-          </button>
-
-        </Link>
-
-      </motion.section>
+      {/* FOOTER */}
+      <footer className="py-10 text-center border-t border-white/10 text-gray-500 text-sm z-10">
+        © {new Date().getFullYear()} SocialEdger. All rights reserved.
+      </footer>
 
     </main>
   );

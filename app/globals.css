@@ -97,3 +97,38 @@ p {
   background: linear-gradient(#7c3aed, #ff00cc);
   border-radius: 10px;
 }
+
+.animated-gradient {
+  background: linear-gradient(270deg, #00ffff, #ff00ff, #00ffff);
+  background-size: 600% 600%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientMove 6s ease infinite;
+}
+
+@keyframes gradientMove {
+  0% { background-position: 0% }
+  50% { background-position: 100% }
+  100% { background-position: 0% }
+}
+
+/* NEON BUTTONS */
+.neon-btn-cyan {
+  padding: 12px 24px;
+  border: 1px solid #00ffff;
+  color: #00ffff;
+  transition: 0.3s;
+}
+.neon-btn-cyan:hover {
+  background: rgba(0,255,255,0.1);
+}
+
+.neon-btn-pink {
+  padding: 12px 24px;
+  border: 1px solid #ff00ff;
+  color: #ff00ff;
+  transition: 0.3s;
+}
+.neon-btn-pink:hover {
+  background: rgba(255,0,255,0.1);
+}

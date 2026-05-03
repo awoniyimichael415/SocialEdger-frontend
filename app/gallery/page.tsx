@@ -8,6 +8,7 @@ import {
   useReadContract,
 } from "wagmi";
 import { formatEther } from "viem";
+import { motion } from "framer-motion";
 
 import { CONTRACTS as ADDRESS } from "@/src/contracts/config";
 import { CONTRACTS as CONTRACT_DATA } from "@/src/lib/contracts";
@@ -57,7 +58,6 @@ export default function GalleryPage() {
     ? formatEther(mintPrice as bigint)
     : null;
 
-  // Load NFT metadata
   useEffect(() => {
     const loadNFTs = async () => {
       try {
@@ -167,13 +167,19 @@ export default function GalleryPage() {
   }, [isSuccess]);
 
   return (
-    <main className="min-h-screen section max-w-7xl mx-auto">
-      <h1 className="text-4xl font-bold mb-10">
-        SocialEdger NFT Gallery
-      </h1>
+    <main className="min-h-screen bg-[#0a0a0f] text-white px-6 py-20">
+
+      {/* HEADER */}
+      <motion.h1
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-5xl md:text-6xl font-extrabold mb-12 text-center bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 bg-clip-text text-transparent"
+      >
+        NFT Gallery
+      </motion.h1>
 
       {message && (
-        <div className="mb-6 text-yellow-400">
+        <div className="mb-6 text-center text-yellow-400">
           {message}
         </div>
       )}
@@ -185,49 +191,93 @@ export default function GalleryPage() {
       )}
 
       {loading ? (
-        <p>Loading NFTs...</p>
+        <p className="text-center text-gray-400">
+          Loading NFTs...
+        </p>
       ) : (
         <>
-          <div className="grid md:grid-cols-3 gap-8">
-            {currentNFTs.map((nft) => (
-              <div key={nft.id} className="glass-card p-5">
-                <img
-                  src={nft.image}
-                  alt={nft.name}
-                  className="w-full h-64 object-cover rounded-xl mb-4"
-                />
+          {/* GRID */}
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
 
-                <h3 className="text-xl font-semibold">
-                  {nft.name}
-                </h3>
+            {currentNFTs.map((nft, i) => (
+              <motion.div
+                key={nft.id}
+                initial={{ opacity: 0, y: 60, scale: 0.9 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ delay: i * 0.05 }}
+                whileHover={{
+                  y: -12,
+                  scale: 1.03,
+                }}
+                className="
+                  relative p-[1px] rounded-3xl
+                  bg-gradient-to-br from-white/20 to-white/5
+                "
+              >
 
-                <p className="text-gray-400 text-sm mb-4">
-                  {nft.description}
-                </p>
+                {/* GLASS CARD */}
+                <div className="
+                  rounded-3xl p-5 h-full
+                  bg-white/5 backdrop-blur-2xl
+                  border border-white/10
+                  shadow-[0_0_25px_rgba(0,255,255,0.08)]
+                  hover:shadow-[0_0_40px_rgba(255,0,200,0.15)]
+                  transition
+                ">
 
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-purple-400 font-bold">
-                    {mintPriceEth
-                      ? `${mintPriceEth} ETH`
-                      : "Loading price..."}
-                  </span>
+                  {/* IMAGE */}
+                  <div className="overflow-hidden rounded-xl mb-4">
+                    <motion.img
+                      src={nft.image}
+                      alt={nft.name}
+                      className="w-full h-64 object-cover"
+                      whileHover={{ scale: 1.1 }}
+                      transition={{ duration: 0.4 }}
+                    />
+                  </div>
+
+                  {/* TEXT */}
+                  <h3 className="text-lg font-semibold mb-1">
+                    {nft.name}
+                  </h3>
+
+                  <p className="text-gray-400 text-sm mb-4 line-clamp-2">
+                    {nft.description}
+                  </p>
+
+                  {/* PRICE */}
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-cyan-400 font-bold">
+                      {mintPriceEth
+                        ? `${mintPriceEth} ETH`
+                        : "Loading..."}
+                    </span>
+                  </div>
+
+                  {/* BUTTON */}
+                  <button
+                    onClick={() => mintNFT(nft.id)}
+                    disabled={!isConnected || txLoading}
+                    className="
+                      w-full py-2 rounded-full
+                      bg-gradient-to-r from-cyan-500 to-pink-500
+                      hover:scale-105 transition
+                      shadow-lg shadow-cyan-500/20
+                    "
+                  >
+                    {mintingId === nft.id && txLoading
+                      ? "Minting..."
+                      : "Mint NFT"}
+                  </button>
+
                 </div>
-
-                <button
-                  onClick={() => mintNFT(nft.id)}
-                  disabled={!isConnected || txLoading}
-                  className="btn-primary w-full"
-                >
-                  {mintingId === nft.id && txLoading
-                    ? "Minting..."
-                    : "Mint NFT"}
-                </button>
-              </div>
+              </motion.div>
             ))}
           </div>
 
-          {/* Pagination Controls */}
-          <div className="flex justify-center items-center gap-6 mt-10">
+          {/* PAGINATION */}
+          <div className="flex justify-center items-center gap-6 mt-16">
+
             <button
               onClick={() =>
                 setCurrentPage((prev) =>
@@ -235,7 +285,7 @@ export default function GalleryPage() {
                 )
               }
               disabled={currentPage === 1}
-              className="btn-outline"
+              className="px-6 py-2 border border-white/20 rounded-full hover:bg-white/10 transition"
             >
               Previous
             </button>
@@ -251,10 +301,11 @@ export default function GalleryPage() {
                 )
               }
               disabled={currentPage === totalPages}
-              className="btn-outline"
+              className="px-6 py-2 border border-white/20 rounded-full hover:bg-white/10 transition"
             >
               Next
             </button>
+
           </div>
         </>
       )}

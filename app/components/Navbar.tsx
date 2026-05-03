@@ -94,10 +94,6 @@ export default function Navbar() {
             KYC
           </Link>
 
-          <Link href="/contributors" className="hover:text-white transition">
-            Contributors
-          </Link>
-
           <Link href="/presale" className="hover:text-white transition">
             Presale
           </Link>
@@ -179,10 +175,6 @@ export default function Navbar() {
           <Link href="/kyc" onClick={() => setOpen(false)}>
             KYC
           </Link>          
-
-          <Link href="/contributors" onClick={() => setOpen(false)}>
-            Contributors
-          </Link>
 
           <Link href="/presale" onClick={() => setOpen(false)}>
             Presale
