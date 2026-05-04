@@ -20,7 +20,7 @@ export default function CategoryPage() {
   const [posts, setPosts] = useState<Post[]>([]);
 
   useEffect(() => {
-    fetch(`http://localhost:5000/api/posts?category=${category}`)
+    fetch(`https://socialedger-backend.onrender.com/api/posts?category=${category}`)
       .then((res) => res.json())
       .then(setPosts);
   }, [category]);
