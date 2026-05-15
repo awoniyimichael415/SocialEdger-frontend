@@ -1,88 +1,368 @@
+"use client";
+
+import { motion } from "framer-motion";
+import SpaceScene from "../components/SpaceScene";
+
 export default function ReputationPage() {
+
+  const fadeUp = {
+    initial: { opacity: 0, y: 100 },
+    whileInView: { opacity: 1, y: 0 },
+    transition: { duration: 1 },
+  };
+
   return (
-    <main className="min-h-screen">
+    <main className="relative min-h-screen overflow-hidden bg-[#0a0a0f] text-white">
 
-      {/* HERO */}
-      <section className="section text-center max-w-5xl mx-auto">
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl">
-          Proof of Reputation
-        </h1>
-        <p className="hero-sub text-gray-300 mt-6 max-w-3xl mx-auto">
-          SocialEdger replaces traditional gatekeeping with a reputation-based
-          system where participation, contribution, and engagement define growth.
-        </p>
-      </section>
+      <SpaceScene />
 
-      {/* WHAT IT IS */}
-      <section className="section max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-        <div>
-          <h2 className="text-3xl font-semibold mb-6">What is Proof of Reputation?</h2>
-          <p className="text-gray-300">
-            Proof of Reputation measures the value each participant brings into
-            the SocialEdger ecosystem. Instead of exclusive access lists,
-            members earn visibility and opportunity through verified activity.
+      {/* ================= HERO ================= */}
+      <section className="relative min-h-screen flex flex-col justify-center items-center text-center px-6 z-10">
+
+        <motion.div
+          initial={{ opacity: 0, scale: 0.92 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1 }}
+        >
+
+          <h1 className="text-[11vw] leading-none font-extrabold tracking-tight">
+
+            <span className="block bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+              PROOF
+            </span>
+
+            <span className="block text-white mt-4">
+              OF REPUTATION
+            </span>
+
+          </h1>
+
+          <p className="mt-8 max-w-4xl mx-auto text-gray-300 text-lg md:text-xl leading-relaxed">
+            SocialEdger introduces Proof of Reputation —
+            a decentralized trust and participation system where
+            contribution, consistency, collaboration, and verified activity
+            shape influence across the ecosystem.
           </p>
-        </div>
 
-        <div className="glass-card h-72 md:h-96 flex items-center justify-center">
-          <span className="text-gray-400">Reputation System Diagram</span>
-        </div>
+        </motion.div>
+
       </section>
 
-      {/* HOW REPUTATION GROWS */}
-      <section className="section max-w-6xl mx-auto">
-        <h2 className="text-3xl font-semibold text-center mb-16">
-          How Reputation Grows
-        </h2>
+      {/* ================= WHAT IS POR ================= */}
+      <section className="relative z-10 py-32 px-6 max-w-7xl mx-auto">
+
+        <div className="grid md:grid-cols-2 gap-20 items-center">
+
+          <motion.div {...fadeUp}>
+
+            <h2 className="text-5xl font-bold mb-10 text-cyan-400">
+              What is Proof of Reputation?
+            </h2>
+
+            <p className="text-gray-300 text-lg leading-relaxed mb-8">
+              Proof of Reputation (PoR) is the foundational trust protocol
+              powering the SocialEdger ecosystem.
+            </p>
+
+            <p className="text-gray-400 leading-relaxed">
+              Instead of relying on centralized authority or
+              financial dominance alone, PoR evaluates participation,
+              contribution quality, consistency, ecosystem collaboration,
+              and verified community impact.
+            </p>
+
+          </motion.div>
+
+          <motion.div
+            {...fadeUp}
+            className="relative overflow-hidden rounded-3xl border border-cyan-500/20 bg-gradient-to-br from-cyan-500/10 to-purple-500/10 backdrop-blur-2xl h-[450px] flex items-center justify-center"
+          >
+
+            <div className="absolute w-72 h-72 bg-cyan-500/20 blur-[120px]" />
+
+            <span className="relative z-10 text-gray-400 text-xl">
+              Reputation Consensus Visualization
+            </span>
+
+          </motion.div>
+
+        </div>
+
+      </section>
+
+      {/* ================= HOW REPUTATION GROWS ================= */}
+      <section className="relative z-10 py-32 px-6 max-w-7xl mx-auto">
+
+        <motion.div {...fadeUp}>
+
+          <h2 className="text-5xl font-bold text-center mb-8">
+            How Reputation Grows
+          </h2>
+
+          <p className="text-gray-400 text-center max-w-3xl mx-auto mb-20">
+            Reputation is built through meaningful ecosystem participation,
+            not artificial metrics or purchased influence.
+          </p>
+
+        </motion.div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+
           {[
-            "Profile Completion",
-            "Membership Ownership",
-            "Shared Participation",
+            "Verified Contributions",
+            "Community Collaboration",
             "Contributor Activity",
             "Platform Engagement",
-            "Community Interaction",
-            "Consistency Over Time",
-            "Verified Contributions",
+            "Long-Term Consistency",
+            "Governance Participation",
+            "Peer Recognition",
+            "Knowledge Sharing",
           ].map((item) => (
-            <div key={item} className="glass-card p-6 text-center">
-              <h3 className="text-lg font-semibold">{item}</h3>
-            </div>
+
+            <motion.div
+              key={item}
+              whileHover={{ y: -10 }}
+              className="p-[1px] rounded-3xl bg-gradient-to-br from-white/20 to-white/5"
+            >
+
+              <div className="h-full rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl p-8">
+
+                <h3 className="text-lg font-semibold text-center">
+                  {item}
+                </h3>
+
+              </div>
+
+            </motion.div>
+
           ))}
+
         </div>
+
       </section>
 
-      {/* WHY IT MATTERS */}
-      <section className="section max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-        <div className="glass-card p-8">
-          <h3 className="text-2xl font-semibold mb-4">Why It Matters</h3>
-          <p className="text-gray-300">
-            Reputation influences contributor ranking, profile visibility,
-            platform opportunities, and future reward mechanisms within
-            SocialEdger’s ecosystem.
-          </p>
+      {/* ================= CONSENSUS SYSTEM ================= */}
+      <section className="relative z-10 py-32 px-6 max-w-7xl mx-auto">
+
+        <div className="grid md:grid-cols-2 gap-20 items-center">
+
+          <motion.div
+            {...fadeUp}
+            className="rounded-3xl border border-pink-500/20 bg-gradient-to-br from-pink-500/10 to-transparent backdrop-blur-2xl p-10"
+          >
+
+            <span className="text-pink-400 uppercase tracking-[4px] text-sm">
+              Reputation Consensus
+            </span>
+
+            <h2 className="text-4xl font-bold mt-4 mb-8">
+              Community-Driven Trust Validation
+            </h2>
+
+            <p className="text-gray-300 leading-relaxed">
+              SocialEdger evolves beyond centralized moderation models.
+              High-reputation contributors help strengthen ecosystem quality
+              through participation, validation, collaboration,
+              and governance influence.
+            </p>
+
+          </motion.div>
+
+          <motion.div {...fadeUp}>
+
+            <h2 className="text-4xl font-bold mb-8 text-cyan-400">
+              Reputation Influences
+            </h2>
+
+            <div className="space-y-6 text-gray-300 text-lg">
+
+              <div>✔ Contributor visibility and ranking</div>
+              <div>✔ Governance participation opportunities</div>
+              <div>✔ Ecosystem trust and recognition</div>
+              <div>✔ Community influence and leadership</div>
+              <div>✔ Future reward and validator systems</div>
+              <div>✔ Access to ecosystem opportunities</div>
+
+            </div>
+
+          </motion.div>
+
         </div>
 
-        <div className="glass-card p-8">
-          <h3 className="text-2xl font-semibold mb-4">Built From Day One</h3>
-          <p className="text-gray-300">
-            Unlike traditional systems where reputation starts after launch,
-            SocialEdger integrates Proof of Reputation from inception,
-            ensuring fairness and equal opportunity globally.
-          </p>
-        </div>
       </section>
 
-      {/* CTA */}
-      <section className="section text-center max-w-4xl mx-auto">
-        <h2 className="text-3xl font-semibold mb-6">
-          Start Building Your Reputation
-        </h2>
-        <p className="text-gray-400 mb-10">
-          Every interaction within SocialEdger contributes to your digital trust score.
-        </p>
-        <button className="btn-primary">Join the Ecosystem</button>
+      {/* ================= PoR vs PoS vs PoW ================= */}
+      <section className="relative z-10 py-32 px-6 max-w-7xl mx-auto">
+
+        <motion.div {...fadeUp}>
+
+          <h2 className="text-5xl font-bold text-center mb-20">
+            A New Consensus Model
+          </h2>
+
+        </motion.div>
+
+        <div className="overflow-x-auto rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl">
+
+          <table className="w-full text-left min-w-[700px]">
+
+            <thead className="border-b border-white/10">
+
+              <tr>
+                <th className="p-6 text-cyan-400">System</th>
+                <th className="p-6 text-cyan-400">Driven By</th>
+                <th className="p-6 text-cyan-400">Core Value</th>
+              </tr>
+
+            </thead>
+
+            <tbody className="text-gray-300">
+
+              <tr className="border-b border-white/10">
+                <td className="p-6">Proof of Work</td>
+                <td className="p-6">Computational Power</td>
+                <td className="p-6">Mining Competition</td>
+              </tr>
+
+              <tr className="border-b border-white/10">
+                <td className="p-6">Proof of Stake</td>
+                <td className="p-6">Token Ownership</td>
+                <td className="p-6">Financial Stake</td>
+              </tr>
+
+              <tr>
+                <td className="p-6 text-cyan-400 font-semibold">
+                  Proof of Reputation
+                </td>
+
+                <td className="p-6">
+                  Contribution & Participation
+                </td>
+
+                <td className="p-6">
+                  Community Trust & Ecosystem Value
+                </td>
+              </tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </section>
+
+      {/* ================= CONTRIBUTOR ROLES ================= */}
+      <section className="relative z-10 py-32 px-6 max-w-7xl mx-auto">
+
+        <motion.div {...fadeUp}>
+
+          <h2 className="text-5xl font-bold text-center mb-8">
+            Ecosystem Contributors
+          </h2>
+
+          <p className="text-gray-400 text-center max-w-3xl mx-auto mb-20">
+            SocialEdger grows through diverse contributors
+            collaborating across technology, creativity,
+            governance, education, and ecosystem expansion.
+          </p>
+
+        </motion.div>
+
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+
+          {[
+            "Developers",
+            "Designers",
+            "Writers",
+            "Educators",
+            "Moderators",
+            "Community Leaders",
+            "Researchers",
+            "Growth Contributors",
+          ].map((item) => (
+
+            <motion.div
+              key={item}
+              whileHover={{ y: -10 }}
+              className="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl p-8 text-center"
+            >
+
+              <h3 className="text-lg font-semibold">
+                {item}
+              </h3>
+
+            </motion.div>
+
+          ))}
+
+        </div>
+
+      </section>
+
+      {/* ================= WHY IT MATTERS ================= */}
+      <section className="relative z-10 py-32 px-6 max-w-6xl mx-auto">
+
+        <div className="grid md:grid-cols-2 gap-10">
+
+          <motion.div
+            {...fadeUp}
+            className="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl p-10"
+          >
+
+            <h3 className="text-3xl font-bold mb-6 text-cyan-400">
+              Why It Matters
+            </h3>
+
+            <p className="text-gray-300 leading-relaxed">
+              Proof of Reputation transforms digital participation
+              into measurable ecosystem value, creating a more transparent,
+              merit-driven, and community-powered environment.
+            </p>
+
+          </motion.div>
+
+          <motion.div
+            {...fadeUp}
+            className="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl p-10"
+          >
+
+            <h3 className="text-3xl font-bold mb-6 text-pink-400">
+              Built For The Future
+            </h3>
+
+            <p className="text-gray-300 leading-relaxed">
+              SocialEdger positions reputation as the foundation
+              for future governance, contributor recognition,
+              ecosystem collaboration, and decentralized trust systems.
+            </p>
+
+          </motion.div>
+
+        </div>
+
+      </section>
+
+      {/* ================= CTA ================= */}
+      <section className="relative z-10 py-32 text-center px-6">
+
+        <motion.div {...fadeUp}>
+
+          <h2 className="text-5xl font-bold mb-8">
+            Start Building Reputation
+          </h2>
+
+          <p className="max-w-3xl mx-auto text-gray-400 text-lg mb-12">
+            Every contribution, collaboration, and interaction
+            helps shape your role within the SocialEdger ecosystem.
+          </p>
+
+          <button className="px-10 py-5 rounded-full bg-gradient-to-r from-cyan-500 to-pink-500 hover:scale-105 transition shadow-2xl shadow-cyan-500/20">
+            Join The Ecosystem
+          </button>
+
+        </motion.div>
+
       </section>
 
     </main>
