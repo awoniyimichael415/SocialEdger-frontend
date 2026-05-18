@@ -75,14 +75,22 @@ export default function ReputationPage() {
 
           <motion.div
             {...fadeUp}
-            className="relative overflow-hidden rounded-3xl border border-cyan-500/20 bg-gradient-to-br from-cyan-500/10 to-purple-500/10 backdrop-blur-2xl h-[450px] flex items-center justify-center"
+            className="relative overflow-hidden rounded-3xl border border-cyan-500/20 bg-gradient-to-br from-cyan-500/10 to-purple-500/10 backdrop-blur-2xl p-6"
           >
 
-            <div className="absolute w-72 h-72 bg-cyan-500/20 blur-[120px]" />
+            <div className="absolute inset-0 bg-cyan-500/5 blur-[120px]" />
 
-            <span className="relative z-10 text-gray-400 text-xl">
-              Reputation Consensus Visualization
-            </span>
+            <img
+              src="/reputation/reputation-consensus.png"
+              alt="Reputation Consensus Visualization"
+              className="
+                relative z-10
+                w-full
+                h-auto
+                object-contain
+                rounded-2xl
+              "
+            />
 
           </motion.div>
 

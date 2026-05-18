@@ -249,12 +249,17 @@ export default function MembershipPage() {
 
           <motion.div
             {...fadeUp}
-            className="rounded-3xl border border-white/10 bg-gradient-to-br from-cyan-500/10 to-pink-500/10 backdrop-blur-2xl h-[450px] flex items-center justify-center"
+            className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-cyan-500/10 to-pink-500/10 backdrop-blur-2xl p-6"
           >
 
-            <span className="text-gray-400 text-xl">
-              Membership Ecosystem Visual
-            </span>
+            <div className="absolute top-0 left-0 w-72 h-72 bg-cyan-500/10 blur-[120px]" />
+            <div className="absolute bottom-0 right-0 w-72 h-72 bg-pink-500/10 blur-[120px]" />
+
+            <img
+              src="/membership/membership-ecosystem.png"
+              alt="Membership Ecosystem"
+              className="relative z-10 w-full h-auto object-contain rounded-2xl"
+            />
 
           </motion.div>
 

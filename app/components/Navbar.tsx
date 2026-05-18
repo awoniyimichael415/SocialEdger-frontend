@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { injected } from "wagmi/connectors";
 
@@ -68,11 +69,24 @@ export default function Navbar() {
 
   return (
     <header className="w-full fixed top-0 z-50 backdrop-blur-lg bg-black/30 border-b border-white/10">
+
       <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 h-20 flex items-center justify-between">
 
         {/* LOGO */}
-        <Link href="/" className="text-2xl font-bold tracking-tight">
-          Social<span className="text-purple-400">Edger</span>
+        <Link
+          href="/"
+          className="flex items-center"
+        >
+
+          <Image
+            src="/logo/socialedger-logo.png"
+            alt="SocialEdger Logo"
+            width={180}
+            height={60}
+            priority
+            className="h-auto w-[120px] md:w-[140px] object-contain"
+          />
+
         </Link>
 
         {/* DESKTOP MENU */}
@@ -158,6 +172,7 @@ export default function Navbar() {
           open ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0"
         }`}
       >
+
         <nav className="flex flex-col gap-6 px-6 py-6 bg-black/80 backdrop-blur-xl text-[18px] font-space text-gray-300 border-t border-white/10">
 
           <Link href="/membership" onClick={() => setOpen(false)}>
@@ -174,7 +189,7 @@ export default function Navbar() {
 
           <Link href="/kyc" onClick={() => setOpen(false)}>
             KYC
-          </Link>          
+          </Link>
 
           <Link href="/presale" onClick={() => setOpen(false)}>
             Presale
@@ -223,6 +238,7 @@ export default function Navbar() {
           </div>
 
         </nav>
+
       </div>
 
     </header>

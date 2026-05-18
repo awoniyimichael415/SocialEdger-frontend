@@ -110,13 +110,22 @@ export default function PresalePage() {
 
         <div className="grid lg:grid-cols-3 gap-10">
 
-          {/* SET */}
+          {/* ================= SET ================= */}
           <motion.div
             {...fadeUp}
             className="relative overflow-hidden rounded-3xl border border-cyan-500/20 bg-gradient-to-br from-cyan-500/10 to-transparent backdrop-blur-2xl p-10"
           >
 
             <div className="absolute top-0 right-0 w-72 h-72 bg-cyan-500/10 blur-[120px]" />
+
+            {/* TOKEN LOGO */}
+            <div className="mb-8 flex justify-center">
+              <img
+                src="/tokens/set-token.png"
+                alt="SET Token"
+                className="w-full h-auto object-contain mx-auto mb-8 max-h-[260px]"
+              />
+            </div>
 
             <span className="text-cyan-400 uppercase tracking-[4px] text-sm">
               Stable Coin
@@ -132,7 +141,7 @@ export default function PresalePage() {
               and future payment infrastructure.
             </p>
 
-            <div className="space-y-4 text-gray-300">
+            <div className="space-y-4 text-gray-300 mb-10">
 
               <div>✔ Stable ecosystem utility</div>
               <div>✔ Transaction settlement layer</div>
@@ -141,15 +150,38 @@ export default function PresalePage() {
 
             </div>
 
+            {/* DENOMINATION */}
+            <div className="rounded-2xl border border-cyan-500/20 bg-black/30 p-5">
+              <h4 className="text-cyan-400 font-semibold mb-4">
+                Denomination
+              </h4>
+
+              <div className="space-y-2 text-gray-300 text-sm">
+                <div>1 SET</div>
+                <div>0.1 dSET</div>
+                <div>0.01 cSET</div>
+                <div>0.001 mSET</div>
+              </div>
+            </div>
+
           </motion.div>
 
-          {/* HIVE */}
+          {/* ================= HIVE ================= */}
           <motion.div
             {...fadeUp}
             className="relative overflow-hidden rounded-3xl border border-purple-500/20 bg-gradient-to-br from-purple-500/10 to-transparent backdrop-blur-2xl p-10"
           >
 
             <div className="absolute bottom-0 left-0 w-72 h-72 bg-purple-500/10 blur-[120px]" />
+
+            {/* TOKEN LOGO */}
+            <div className="mb-8 flex justify-center">
+              <img
+                src="/tokens/hive-token.png"
+                alt="HIVE Token"
+                className="w-full h-auto object-contain mx-auto mb-8 max-h-[260px]"
+              />
+            </div>
 
             <span className="text-purple-400 uppercase tracking-[4px] text-sm">
               Utility Token
@@ -165,7 +197,7 @@ export default function PresalePage() {
               and platform utility mechanisms.
             </p>
 
-            <div className="space-y-4 text-gray-300">
+            <div className="space-y-4 text-gray-300 mb-10">
 
               <div>✔ Contributor incentives</div>
               <div>✔ Ecosystem utility</div>
@@ -174,15 +206,38 @@ export default function PresalePage() {
 
             </div>
 
+            {/* DENOMINATION */}
+            <div className="rounded-2xl border border-purple-500/20 bg-black/30 p-5">
+              <h4 className="text-purple-400 font-semibold mb-4">
+                Denomination
+              </h4>
+
+              <div className="space-y-2 text-gray-300 text-sm">
+                <div>1 HIVE</div>
+                <div>0.1 dHIVE</div>
+                <div>0.01 cHIVE</div>
+                <div>0.001 mHIVE</div>
+              </div>
+            </div>
+
           </motion.div>
 
-          {/* DAOCRAT */}
+          {/* ================= DAOCRAT ================= */}
           <motion.div
             {...fadeUp}
             className="relative overflow-hidden rounded-3xl border border-pink-500/20 bg-gradient-to-br from-pink-500/10 to-transparent backdrop-blur-2xl p-10"
           >
 
             <div className="absolute top-0 left-0 w-72 h-72 bg-pink-500/10 blur-[120px]" />
+
+            {/* TOKEN LOGO */}
+            <div className="mb-8 flex justify-center">
+              <img
+                src="/tokens/daocrat-token.png"
+                alt="Daocrat Token"
+                className="w-full h-auto object-contain mx-auto mb-8 max-h-[260px]"
+              />
+            </div>
 
             <span className="text-pink-400 uppercase tracking-[4px] text-sm">
               Governance Token
@@ -198,7 +253,7 @@ export default function PresalePage() {
               and community-led evolution.
             </p>
 
-            <div className="space-y-4 text-gray-300">
+            <div className="space-y-4 text-gray-300 mb-10">
 
               <div>✔ Governance participation</div>
               <div>✔ Voting influence</div>
@@ -207,9 +262,85 @@ export default function PresalePage() {
 
             </div>
 
+            {/* DENOMINATION */}
+            <div className="rounded-2xl border border-pink-500/20 bg-black/30 p-5">
+              <h4 className="text-pink-400 font-semibold mb-4">
+                Denomination
+              </h4>
+
+              <div className="space-y-2 text-gray-300 text-sm">
+                <div>1 DAO</div>
+                <div>0.1 dDAO</div>
+                <div>0.01 cDAO</div>
+                <div>0.001 mDAO</div>
+              </div>
+            </div>
+
           </motion.div>
 
         </div>
+
+      </section>
+
+      {/* ================= SOCIALS ================= */}
+      <section className="relative z-10 py-20 px-6 max-w-5xl mx-auto">
+
+        <motion.div
+          {...fadeUp}
+          className="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl p-10 text-center"
+        >
+
+          <h2 className="text-4xl font-bold mb-8">
+            Official Social Channels
+          </h2>
+
+          <p className="text-gray-400 max-w-2xl mx-auto mb-12">
+            Follow SocialEdger across all official platforms for
+            ecosystem announcements, governance updates,
+            presale information, and community events.
+          </p>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+            <a
+              href="#"
+              className="rounded-2xl border border-cyan-500/20 bg-cyan-500/10 px-6 py-5 hover:scale-105 transition"
+            >
+              <div className="text-cyan-400 text-xl font-semibold">
+                X / Twitter
+              </div>
+            </a>
+
+            <a
+              href="#"
+              className="rounded-2xl border border-purple-500/20 bg-purple-500/10 px-6 py-5 hover:scale-105 transition"
+            >
+              <div className="text-purple-400 text-xl font-semibold">
+                Telegram
+              </div>
+            </a>
+
+            <a
+              href="#"
+              className="rounded-2xl border border-pink-500/20 bg-pink-500/10 px-6 py-5 hover:scale-105 transition"
+            >
+              <div className="text-pink-400 text-xl font-semibold">
+                Discord
+              </div>
+            </a>
+
+            <a
+              href="#"
+              className="rounded-2xl border border-green-500/20 bg-green-500/10 px-6 py-5 hover:scale-105 transition"
+            >
+              <div className="text-green-400 text-xl font-semibold">
+                Medium
+              </div>
+            </a>
+
+          </div>
+
+        </motion.div>
 
       </section>
 
