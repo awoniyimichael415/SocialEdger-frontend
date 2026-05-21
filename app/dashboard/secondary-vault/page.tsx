@@ -47,7 +47,7 @@ export default function SecondaryVault() {
         setLoadingRep(true);
 
         const res = await fetch(
-          `https://socialedger-backend.onrender.com/api/reputation/${address}`
+          `https://api.socialedger.io/api/reputation/${address}`
         );
 
         const data = await res.json();
