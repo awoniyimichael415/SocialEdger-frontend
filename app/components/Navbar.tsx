@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
+import { motion } from "framer-motion";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { injected } from "wagmi/connectors";
 
@@ -26,7 +26,11 @@ export default function Navbar() {
 
     // If MetaMask exists → connect normally
     if (hasMetaMask) {
-      connect({ connector: injected() });
+
+      connect({
+        connector: injected(),
+      });
+
       return;
     }
 
@@ -50,11 +54,15 @@ export default function Navbar() {
           /iPhone|iPad|iPod/i.test(navigator.userAgent);
 
         if (isIOS) {
+
           window.location.href =
             "https://apps.apple.com/app/metamask/id1438144202";
+
         } else {
+
           window.location.href =
             "https://play.google.com/store/apps/details?id=io.metamask";
+
         }
 
       }, 2000);
@@ -68,6 +76,7 @@ export default function Navbar() {
   };
 
   return (
+
     <header className="w-full fixed top-0 z-50 backdrop-blur-lg bg-black/30 border-b border-white/10">
 
       <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 h-20 flex items-center justify-between">
@@ -75,22 +84,73 @@ export default function Navbar() {
         {/* LOGO */}
         <Link
           href="/"
-          className="flex items-center"
+          className="flex items-center shrink-0"
         >
 
-          <Image
-            src="/logo/socialedger-logo.png"
-            alt="SocialEdger Logo"
-            width={180}
-            height={60}
-            priority
-            className="h-auto w-[120px] md:w-[140px] object-contain"
-          />
+          <div
+            className="
+              flex
+              items-center
+              leading-none
+              font-black
+              tracking-tight
+              select-none
+              text-[20px]
+              md:text-[24px]
+            "
+          >
+
+            {/* S */}
+            <span className="
+              bg-gradient-to-r
+              from-cyan-400
+              via-purple-400
+              to-pink-500
+              bg-clip-text
+              text-transparent
+            ">
+              S
+            </span>
+
+            {/* EARTH ICON */}
+            <motion.span
+              animate={{
+                rotate: 360,
+              }}
+              transition={{
+                duration: 20,
+                repeat: Infinity,
+                ease: "linear",
+              }}
+              className="
+                mx-[1px]
+                text-[16px]
+                md:text-[18px]
+                text-cyan-300
+                drop-shadow-[0_0_10px_rgba(0,255,255,0.7)]
+              "
+            >
+              🌎
+            </motion.span>
+
+            {/* REST */}
+            <span className="
+              bg-gradient-to-r
+              from-cyan-400
+              via-purple-400
+              to-pink-500
+              bg-clip-text
+              text-transparent
+            ">
+              CIALEDGER
+            </span>
+
+          </div>
 
         </Link>
 
         {/* DESKTOP MENU */}
-        <nav className="hidden md:flex gap-10 text-[18px] font-space text-gray-300">
+        <nav className="hidden md:flex gap-8 text-[17px] font-space text-gray-300">
 
           <Link href="/membership" className="hover:text-white transition">
             Membership
@@ -242,5 +302,6 @@ export default function Navbar() {
       </div>
 
     </header>
+
   );
 }
