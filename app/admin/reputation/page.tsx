@@ -10,18 +10,26 @@ import ContributorsTable from "./components/ContributorsTable";
 import ContributorDetails from "./components/ContributorDetails";
 import LoadingState from "./components/LoadingState";
 
-export default function ReputationPage() {
-  const [loading, setLoading] = useState(true);
+type DashboardData = Record<string, any>;
+type Contributor = Record<string, any>;
 
-  const [dashboard, setDashboard] = useState(null);
-  const [leaderboard, setLeaderboard] = useState([]);
-  const [contributors, setContributors] = useState([]);
+export default function ReputationPage() {
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const [dashboard, setDashboard] =
+    useState<DashboardData | null>(null);
+
+  const [leaderboard, setLeaderboard] =
+    useState<Contributor[]>([]);
+
+  const [contributors, setContributors] =
+    useState<Contributor[]>([]);
 
   const [selectedWallet, setSelectedWallet] =
     useState<string | null>(null);
 
   const [selectedContributor, setSelectedContributor] =
-    useState(null);
+    useState<Contributor | null>(null);
 
   useEffect(() => {
     loadDashboard();
@@ -39,9 +47,9 @@ export default function ReputationPage() {
         ReputationApi.getContributors(),
       ]);
 
-      setDashboard(dashboardData);
-      setLeaderboard(leaderboardData);
-      setContributors(contributorsData);
+      setDashboard(dashboardData as DashboardData);
+      setLeaderboard(leaderboardData as Contributor[]);
+      setContributors(contributorsData as Contributor[]);
     } catch (error) {
       console.error(error);
     } finally {
@@ -56,7 +64,9 @@ export default function ReputationPage() {
       const contributor =
         await ReputationApi.getReputation(wallet);
 
-      setSelectedContributor(contributor);
+      setSelectedContributor(
+        contributor as Contributor
+      );
     } catch (error) {
       console.error(error);
     }
@@ -68,7 +78,6 @@ export default function ReputationPage() {
 
   return (
     <main className="space-y-8 p-8">
-
       <section>
         <h1 className="text-4xl font-bold">
           Reputation Management
@@ -100,7 +109,6 @@ export default function ReputationPage() {
           data={selectedContributor}
         />
       )}
-
     </main>
   );
 }
