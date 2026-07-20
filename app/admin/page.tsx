@@ -4,7 +4,6 @@ import DashboardHero from "./components/DashboardHero";
 import DashboardStats from "./components/DashboardStats";
 import DashboardActivity from "./components/DashboardActivity";
 import DashboardLeaderboard from "./components/DashboardLeaderboard";
-import DashboardQuickActions from "./components/DashboardQuickActions";
 import DashboardSystemHealth from "./components/DashboardSystemHealth";
 
 export default function AdminDashboard() {
@@ -46,12 +45,10 @@ export default function AdminDashboard() {
       </section>
 
       {/* =========================================
-          QUICK ACTIONS + SYSTEM HEALTH
+          SYSTEM HEALTH
       ========================================= */}
 
-      <section className="grid xl:grid-cols-2 gap-8">
-
-        <DashboardQuickActions />
+      <section>
 
         <DashboardSystemHealth />
 
