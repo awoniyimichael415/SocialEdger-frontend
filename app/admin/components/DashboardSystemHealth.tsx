@@ -68,15 +68,15 @@ export default function DashboardSystemHealth() {
 
     ] = await Promise.all([
 
-      ping("http://localhost:5000/api/membership/admin/summary"),
+      ping("https://api.socialedger.io/api/membership/admin/summary"),
 
-      ping("http://localhost:5000/api/presale/summary"),
+      ping("https://api.socialedger.io/api/presale/summary"),
 
-      ping("http://localhost:5000/api/rewards/admin/transactions"),
+      ping("https://api.socialedger.io/api/rewards/admin/transactions"),
 
-      ping("http://localhost:5000/api/contributors"),
+      ping("https://api.socialedger.io/api/contributors"),
 
-      ping("http://localhost:5000/api/opportunities"),
+      ping("https://api.socialedger.io/api/opportunities"),
 
     ]);
 
