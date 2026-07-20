@@ -23,7 +23,7 @@ export default function ContentHub() {
 
   const fetchPosts = async (category: string, setter: any) => {
     const res = await fetch(
-      `http://localhost:5000/api/posts?category=${category}`
+      `https://api.socialedger.io/api/posts?category=${category}`
     );
     const data = await res.json();
     setter(data.slice(0, 3)); // latest 3
