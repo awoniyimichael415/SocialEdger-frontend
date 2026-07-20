@@ -148,6 +148,18 @@ PARSED DATA
     presaleData?.[3]?.result as
       | ParticipantInfo
       | undefined;
+
+  const buyTokens = async () => {
+    if (!ethAmount) return;
+
+    writeContract({
+      address: CONTRACTS.Presale.address as `0x${string}`,
+      abi: CONTRACTS.Presale.abi,
+      functionName: "buyTokens",
+      value: parseEther(ethAmount),
+    });
+  };
+
 /*
 =========================================
 LIVE PURCHASE ESTIMATION
