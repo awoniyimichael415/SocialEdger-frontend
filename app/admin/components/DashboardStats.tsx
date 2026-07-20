@@ -34,15 +34,15 @@ export default function DashboardStats() {
 
       ] = await Promise.all([
 
-        fetch("http://localhost:5000/api/membership/admin/summary"),
+        fetch("https://api.socialedger.io/api/membership/admin/summary"),
 
-        fetch("http://localhost:5000/api/presale/summary"),
+        fetch("https://api.socialedger.io/api/presale/summary"),
 
-        fetch("http://localhost:5000/api/contributors"),
+        fetch("https://api.socialedger.io/api/contributors"),
 
-        fetch("http://localhost:5000/api/opportunities"),
+        fetch("https://api.socialedger.io/api/opportunities"),
 
-        fetch("http://localhost:5000/api/rewards/admin/transactions"),
+        fetch("https://api.socialedger.io/api/rewards/admin/transactions"),
 
       ]);
 
