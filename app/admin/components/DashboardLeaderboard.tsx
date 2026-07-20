@@ -18,7 +18,7 @@ export default function DashboardLeaderboard() {
 
       const response = await fetch(
 
-        "http://localhost:5000/api/contributors"
+        "https://api.socialedger.io/api/contributors"
 
       );
 
