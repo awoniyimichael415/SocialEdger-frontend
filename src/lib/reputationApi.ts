@@ -1,6 +1,25 @@
 const API_BASE =
   process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
 
+export interface DashboardData {
+  [key: string]: any;
+}
+
+export interface Contributor {
+  _id?: string;
+  wallet?: string;
+  walletAddress?: string;
+  displayName?: string;
+  fullName?: string;
+  name?: string;
+  reputation?: number;
+  score?: number;
+  rank?: number;
+  verified?: boolean;
+  badges?: any[];
+  [key: string]: any;
+}
+
 async function request<T>(url: string): Promise<T> {
   const response = await fetch(`${API_BASE}${url}`, {
     headers: {
@@ -12,29 +31,40 @@ async function request<T>(url: string): Promise<T> {
 
   if (!response.ok) {
     const message = await response.text();
+
     throw new Error(
       `Request failed (${response.status}): ${message}`
     );
   }
 
-  return response.json();
+  return (await response.json()) as T;
 }
 
 const ReputationApi = {
-  getDashboard() {
-    return request("/api/reputation/admin/dashboard");
+  getDashboard(): Promise<DashboardData> {
+    return request<DashboardData>(
+      "/api/reputation/admin/dashboard"
+    );
   },
 
-  getLeaderboard() {
-    return request("/api/reputation/admin/leaderboard");
+  getLeaderboard(): Promise<Contributor[]> {
+    return request<Contributor[]>(
+      "/api/reputation/admin/leaderboard"
+    );
   },
 
-  getContributors() {
-    return request("/api/reputation/admin/contributors");
+  getContributors(): Promise<Contributor[]> {
+    return request<Contributor[]>(
+      "/api/reputation/admin/contributors"
+    );
   },
 
-  getReputation(wallet: string) {
-    return request(`/api/reputation/${wallet}`);
+  getReputation(
+    wallet: string
+  ): Promise<Contributor> {
+    return request<Contributor>(
+      `/api/reputation/${wallet}`
+    );
   },
 };
 
