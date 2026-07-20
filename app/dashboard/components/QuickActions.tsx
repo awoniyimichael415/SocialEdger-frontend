@@ -45,13 +45,7 @@ const actions = [
     icon: "💰",
     color: "from-yellow-500/20 to-yellow-700/10",
   },
-  {
-    title: "Leaderboard",
-    description: "View the highest ranked contributors.",
-    href: "/leaderboard",
-    icon: "🏆",
-    color: "from-indigo-500/20 to-indigo-700/10",
-  },
+
   {
     title: "DAO Governance",
     description: "Participate in governance proposals and voting.",
