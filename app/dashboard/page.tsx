@@ -201,25 +201,6 @@ export default function DashboardHome() {
         badges={reputation?.badges}
       />
 
-      {/* LOADING */}
-
-      {loadingReputation && (
-
-        <div className="glass-card p-8 mb-8 text-center">
-
-          <h2 className="text-2xl font-semibold">
-            Loading your ecosystem...
-          </h2>
-
-          <p className="text-gray-400 mt-3">
-            Fetching contributor reputation,
-            statistics and rewards.
-          </p>
-
-        </div>
-
-      )}
-
       {/* INFTO AGREEMENT */}
 
       {!loadingReputation && (
@@ -276,11 +257,13 @@ export default function DashboardHome() {
 
       )}
 
-      {/* REPUTATION + STATS */}
+      {/* LOADING */}
+
+      {/* REPUTATION SCORE */}
 
       {!loadingReputation && (
 
-        <div className="grid xl:grid-cols-2 gap-8 mb-8">
+        <div className="mb-8">
 
           <ReputationCard
             totalReputation={
@@ -309,6 +292,16 @@ export default function DashboardHome() {
             }
           />
 
+        </div>
+
+      )}
+
+      {/* CONTRIBUTOR STATISTICS */}
+
+      {!loadingReputation && (
+
+       <div className="mb-8">
+
           <StatsGrid
             contributor={
               reputation?.contributor
@@ -318,6 +311,7 @@ export default function DashboardHome() {
         </div>
 
       )}
+
 
       {/* QUICK ACTIONS */}
 
