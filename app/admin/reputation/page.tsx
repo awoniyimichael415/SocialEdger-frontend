@@ -2,7 +2,11 @@
 
 import { useEffect, useState } from "react";
 
-import ReputationApi from "@/src/lib/reputationApi";
+import ReputationApi, {
+  DashboardData,
+  Contributor,
+  ReputationDetails,
+} from "@/src/lib/reputationApi";
 
 import DashboardCards from "./components/DashboardCards";
 import Leaderboard from "./components/Leaderboard";
@@ -10,11 +14,8 @@ import ContributorsTable from "./components/ContributorsTable";
 import ContributorDetails from "./components/ContributorDetails";
 import LoadingState from "./components/LoadingState";
 
-type DashboardData = Record<string, any>;
-type Contributor = Record<string, any>;
-
 export default function ReputationPage() {
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState(true);
 
   const [dashboard, setDashboard] =
     useState<DashboardData | null>(null);
@@ -29,7 +30,7 @@ export default function ReputationPage() {
     useState<string | null>(null);
 
   const [selectedContributor, setSelectedContributor] =
-    useState<Contributor | null>(null);
+    useState<ReputationDetails | null>(null);
 
   useEffect(() => {
     loadDashboard();
@@ -47,9 +48,9 @@ export default function ReputationPage() {
         ReputationApi.getContributors(),
       ]);
 
-      setDashboard(dashboardData as DashboardData);
-      setLeaderboard(leaderboardData as Contributor[]);
-      setContributors(contributorsData as Contributor[]);
+      setDashboard(dashboardData);
+      setLeaderboard(leaderboardData);
+      setContributors(contributorsData);
     } catch (error) {
       console.error(error);
     } finally {
@@ -64,9 +65,7 @@ export default function ReputationPage() {
       const contributor =
         await ReputationApi.getReputation(wallet);
 
-      setSelectedContributor(
-        contributor as Contributor
-      );
+      setSelectedContributor(contributor);
     } catch (error) {
       console.error(error);
     }
@@ -90,9 +89,7 @@ export default function ReputationPage() {
         </p>
       </section>
 
-      <DashboardCards
-        dashboard={dashboard}
-      />
+      <DashboardCards dashboard={dashboard} />
 
       <Leaderboard
         contributors={leaderboard}
