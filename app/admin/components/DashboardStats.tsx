@@ -2,8 +2,11 @@
 
 import { useEffect, useState } from "react";
 
-export default function DashboardStats() {
+const API =
+  process.env.NEXT_PUBLIC_BACKEND_URL ||
+  "http://localhost:5000";
 
+export default function DashboardStats() {
   const [membership, setMembership] = useState<any>(null);
   const [presale, setPresale] = useState<any>(null);
   const [contributors, setContributors] = useState<any>(null);
@@ -11,221 +14,137 @@ export default function DashboardStats() {
   const [rewardTransactions, setRewardTransactions] = useState<any[]>([]);
 
   useEffect(() => {
-
     loadDashboard();
-
   }, []);
 
   async function loadDashboard() {
-
     try {
-
       const [
-
         membershipRes,
-
         presaleRes,
-
         contributorRes,
-
         opportunityRes,
-
         rewardRes,
-
       ] = await Promise.all([
-
-        fetch("https://api.socialedger.io/api/membership/admin/summary"),
-
-        fetch("https://api.socialedger.io/api/presale/summary"),
-
-        fetch("https://api.socialedger.io/api/contributors"),
-
-        fetch("https://api.socialedger.io/api/opportunities"),
-
-        fetch("https://api.socialedger.io/api/rewards/admin/transactions"),
-
+        fetch(`${API}/api/membership/admin/summary`),
+        fetch(`${API}/api/presale/summary`),
+        fetch(`${API}/api/contributors`),
+        fetch(`${API}/api/opportunities`),
+        fetch(`${API}/api/rewards/admin/transactions`),
       ]);
 
-      setMembership(await membershipRes.json());
+      if (membershipRes.ok) {
+        setMembership(await membershipRes.json());
+      }
 
-      setPresale(await presaleRes.json());
+      if (presaleRes.ok) {
+        setPresale(await presaleRes.json());
+      }
 
-      setContributors(await contributorRes.json());
+      if (contributorRes.ok) {
+        setContributors(await contributorRes.json());
+      }
 
-      setOpportunities(await opportunityRes.json());
+      if (opportunityRes.ok) {
+        setOpportunities(await opportunityRes.json());
+      }
 
-      setRewardTransactions(await rewardRes.json());
-
+      if (rewardRes.ok) {
+        setRewardTransactions(await rewardRes.json());
+      }
     } catch (error) {
-
-      console.error(error);
-
+      console.error("Dashboard stats error:", error);
     }
-
   }
 
   const stats = [
-
     {
-
       title: "Members",
-
-      value:
-        membership
-          ? membership.primaryMembers +
-            membership.secondaryMembers
-          : "--",
-
+      value: membership
+        ? (membership.primaryMembers ?? 0) +
+          (membership.secondaryMembers ?? 0)
+        : "--",
       subtitle: "Active Memberships",
-
       icon: "👥",
-
-      color:
-        "from-cyan-500/20 to-cyan-700/10",
-
+      color: "from-cyan-500/20 to-cyan-700/10",
     },
-
     {
-
       title: "NFT Minted",
-
-      value:
-        membership
-          ? membership.mintedNFTs
-          : "--",
-
-      subtitle:
-        membership
-          ? `${membership.availableNFTs} Remaining`
-          : "--",
-
+      value: membership
+        ? membership.mintedNFTs ?? 0
+        : "--",
+      subtitle: membership
+        ? `${membership.availableNFTs ?? 0} Remaining`
+        : "--",
       icon: "🖼️",
-
-      color:
-        "from-pink-500/20 to-pink-700/10",
-
+      color: "from-pink-500/20 to-pink-700/10",
     },
-
     {
-
       title: "Presale Participants",
-
-      value:
-        presale
-          ? Number(presale[3])
-          : "--",
-
+      value: Array.isArray(presale)
+        ? Number(presale[3] ?? 0)
+        : "--",
       subtitle: "Live Blockchain",
-
       icon: "🚀",
-
-      color:
-        "from-purple-500/20 to-purple-700/10",
-
+      color: "from-purple-500/20 to-purple-700/10",
     },
-
     {
-
       title: "Contributors",
-
-      value:
-        contributors?.length ?? "--",
-
+      value: Array.isArray(contributors)
+        ? contributors.length
+        : "--",
       subtitle: "Registered",
-
       icon: "⭐",
-
-      color:
-        "from-green-500/20 to-green-700/10",
-
+      color: "from-green-500/20 to-green-700/10",
     },
-
     {
-
       title: "Open Opportunities",
-
-      value:
-        opportunities?.length ?? "--",
-
+      value: Array.isArray(opportunities)
+        ? opportunities.length
+        : "--",
       subtitle: "Available",
-
       icon: "🎯",
-
-      color:
-        "from-orange-500/20 to-orange-700/10",
-
+      color: "from-orange-500/20 to-orange-700/10",
     },
-
     {
-
       title: "Reward Transactions",
-
-      value:
-        rewardTransactions?.length ?? "--",
-
+      value: Array.isArray(rewardTransactions)
+        ? rewardTransactions.length
+        : "--",
       subtitle: "Completed",
-
       icon: "💰",
-
-      color:
-        "from-yellow-500/20 to-yellow-700/10",
-
+      color: "from-yellow-500/20 to-yellow-700/10",
     },
-
   ];
 
   return (
-
     <section className="grid xl:grid-cols-3 md:grid-cols-2 gap-6">
-
       {stats.map((item) => (
-
         <div
-
           key={item.title}
-
           className={`rounded-3xl border border-white/10 bg-gradient-to-br ${item.color} backdrop-blur-xl p-8 transition hover:scale-[1.02]`}
-
         >
-
           <div className="flex justify-between items-center">
-
             <div>
-
               <p className="text-gray-400">
-
                 {item.title}
-
               </p>
 
               <h2 className="mt-3 text-4xl font-bold">
-
                 {item.value}
-
               </h2>
 
               <p className="mt-4 text-cyan-400">
-
                 {item.subtitle}
-
               </p>
-
             </div>
 
             <div className="text-5xl">
-
               {item.icon}
-
             </div>
-
           </div>
-
         </div>
-
       ))}
-
     </section>
-
   );
-
 }
