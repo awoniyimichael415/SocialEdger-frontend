@@ -6,6 +6,7 @@ interface Level {
   progress: number;
   nextLevel: number | null;
   reputationRemaining: number;
+  maxLevel?: boolean;
 }
 
 interface Breakdown {
@@ -32,37 +33,26 @@ export default function ReputationCard({
 }: Props) {
   return (
     <section className="glass-card p-8">
-
-      <div className="flex justify-between items-center mb-8">
-
+      <div className="mb-8 flex items-center justify-between">
         <div>
-
           <p className="text-gray-400">
             Reputation Score
           </p>
 
-          <h2 className="text-5xl font-bold mt-2 text-cyan-400">
+          <h2 className="mt-2 text-5xl font-bold text-cyan-400">
             {totalReputation.toLocaleString()}
           </h2>
 
-          <p className="text-gray-400 mt-2">
+          <p className="mt-2 text-gray-400">
             Proof of Reputation
           </p>
-
         </div>
 
-        <div className="text-6xl">
-          ⭐
-        </div>
-
+        <div className="text-6xl">⭐</div>
       </div>
 
-      {/* Level */}
-
       <div className="mb-8">
-
-        <div className="flex justify-between mb-3">
-
+        <div className="mb-3 flex justify-between">
           <span className="font-semibold">
             Level {level.level}
           </span>
@@ -70,98 +60,73 @@ export default function ReputationCard({
           <span className="text-cyan-400">
             {level.progress}%
           </span>
-
         </div>
 
-        <div className="w-full h-3 rounded-full bg-white/10 overflow-hidden">
-
+        <div className="h-3 w-full overflow-hidden rounded-full bg-white/10">
           <div
             className="h-full bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 transition-all duration-700"
             style={{
               width: `${level.progress}%`,
             }}
           />
-
         </div>
 
-        <p className="text-gray-400 text-sm mt-3">
-
-          {level.maxLevel
+        <p className="mt-3 text-sm text-gray-400">
+          {level.maxLevel ||
+          level.nextLevel === null
             ? "Maximum Level Achieved"
             : `${level.reputationRemaining.toLocaleString()} reputation until Level ${level.level + 1}`}
-
         </p>
-
       </div>
 
-      {/* Summary */}
-
-      <div className="grid grid-cols-2 gap-5 mb-8">
-
-        <div className="rounded-2xl bg-white/5 border border-white/10 p-5">
-
-          <p className="text-gray-400 text-sm">
+      <div className="mb-8 grid grid-cols-2 gap-5">
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+          <p className="text-sm text-gray-400">
             Current Title
           </p>
 
           <h3 className="mt-2 font-semibold">
             {level.title}
           </h3>
-
         </div>
 
-        <div className="rounded-2xl bg-white/5 border border-white/10 p-5">
-
-          <p className="text-gray-400 text-sm">
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+          <p className="text-sm text-gray-400">
             DAO Voting Weight
           </p>
 
           <h3 className="mt-2 font-semibold">
             {daoVotingWeight}
           </h3>
-
         </div>
 
-        <div className="rounded-2xl bg-white/5 border border-white/10 p-5">
-
-          <p className="text-gray-400 text-sm">
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+          <p className="text-sm text-gray-400">
             Global Rank
           </p>
 
           <h3 className="mt-2 font-semibold">
-
-            {globalRank
-              ? `#${globalRank}`
-              : "--"}
-
+            {globalRank ? `#${globalRank}` : "--"}
           </h3>
-
         </div>
 
-        <div className="rounded-2xl bg-white/5 border border-white/10 p-5">
-
-          <p className="text-gray-400 text-sm">
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+          <p className="text-sm text-gray-400">
             Reputation Sources
           </p>
 
           <h3 className="mt-2 font-semibold">
             4 Modules
           </h3>
-
         </div>
-
       </div>
 
-      {/* Breakdown */}
-
       <div>
-
-        <h3 className="text-lg font-semibold mb-5">
+        <h3 className="mb-5 text-lg font-semibold">
           Reputation Breakdown
         </h3>
 
         <div className="space-y-4">
-
           <BreakdownItem
             title="Membership"
             value={breakdown.membership}
@@ -181,11 +146,8 @@ export default function ReputationCard({
             title="Rewards"
             value={breakdown.rewards}
           />
-
         </div>
-
       </div>
-
     </section>
   );
 }
@@ -198,16 +160,12 @@ function BreakdownItem({
   value: number;
 }) {
   return (
-    <div className="flex justify-between items-center rounded-xl bg-white/5 px-4 py-3 border border-white/10">
+    <div className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-4 py-3">
+      <span>{title}</span>
 
-      <span>
-        {title}
-      </span>
-
-      <span className="text-cyan-400 font-semibold">
+      <span className="font-semibold text-cyan-400">
         +{value}
       </span>
-
     </div>
   );
 }
