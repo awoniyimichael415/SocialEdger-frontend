@@ -109,28 +109,45 @@ PARSED DATA
 =========================================
 */
 
+  type PhaseData = {
+    name: string;
+    rate: bigint;
+    active: boolean;
+  };
+
+  type PresaleSummary = readonly [
+    bigint, // total SET sold
+    bigint, // total ETH raised
+    bigint, // current phase
+    bigint, // participants
+    bigint, // minimum purchase
+    bigint  // maximum purchase
+  ];
+
+  type ParticipantInfo = readonly [
+    boolean, // has participated
+    bigint   // ETH spent
+  ];
+
   const phase =
-    presaleData?.[0]?.result;
+    presaleData?.[0]?.result as
+      | PhaseData
+      | undefined;
 
   const summary =
-    presaleData?.[1]?.result;
+    presaleData?.[1]?.result as
+      | PresaleSummary
+      | undefined;
 
   const remaining =
-    presaleData?.[2]?.result;
+    presaleData?.[2]?.result as
+      | bigint
+      | undefined;
 
   const participant =
-    presaleData?.[3]?.result;
-
-  const buyTokens = async () => {
-    if (!ethAmount) return;
-
-    writeContract({
-      address: CONTRACTS.Presale.address as `0x${string}`,
-      abi: CONTRACTS.Presale.abi,
-      functionName: "buyTokens",
-      value: parseEther(ethAmount),
-    });
-  };
+    presaleData?.[3]?.result as
+      | ParticipantInfo
+      | undefined;
 /*
 =========================================
 LIVE PURCHASE ESTIMATION
