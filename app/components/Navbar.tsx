@@ -164,6 +164,10 @@ export default function Navbar() {
             NFTs
           </Link>
 
+          <Link href="/contributors" className="hover:text-white transition">
+            Contributors
+          </Link>
+
           <Link href="/kyc" className="hover:text-white transition">
             KYC
           </Link>
@@ -245,6 +249,10 @@ export default function Navbar() {
 
           <Link href="/gallery" onClick={() => setOpen(false)}>
             NFTs
+          </Link>
+
+          <Link href="/contributors" onClick={() => setOpen(false)}>
+            Contributors
           </Link>
 
           <Link href="/kyc" onClick={() => setOpen(false)}>
