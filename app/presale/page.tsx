@@ -5,6 +5,7 @@ import {
   useAccount,
   useWriteContract,
   useReadContract,
+  useReadContracts,
   useWaitForTransactionReceipt,
 } from "wagmi";
 
@@ -38,6 +39,88 @@ export default function PresalePage() {
     },
   });
 
+  /*
+=========================================
+LIVE PRESALE DATA
+=========================================
+*/
+
+  const { data: presaleData } = useReadContracts({
+
+    contracts: [
+
+      {
+        address:
+          CONTRACTS.Presale.address as `0x${string}`,
+
+        abi:
+          CONTRACTS.Presale.abi,
+
+        functionName:
+          "getCurrentPhase",
+      },
+
+      {
+        address:
+          CONTRACTS.Presale.address as `0x${string}`,
+
+        abi:
+          CONTRACTS.Presale.abi,
+
+        functionName:
+          "presaleSummary",
+      },
+
+      {
+        address:
+          CONTRACTS.Presale.address as `0x${string}`,
+
+        abi:
+          CONTRACTS.Presale.abi,
+
+        functionName:
+          "remainingTokens",
+      },
+
+      ...(address
+        ? [
+            {
+              address:
+                CONTRACTS.Presale.address as `0x${string}`,
+
+              abi:
+                CONTRACTS.Presale.abi,
+
+              functionName:
+                "participantInfo",
+
+              args: [address],
+            },
+          ]
+        : []),
+
+    ],
+
+  });
+
+/*
+=========================================
+PARSED DATA
+=========================================
+*/
+
+  const phase =
+    presaleData?.[0]?.result;
+
+  const summary =
+    presaleData?.[1]?.result;
+
+  const remaining =
+    presaleData?.[2]?.result;
+
+  const participant =
+    presaleData?.[3]?.result;
+
   const buyTokens = async () => {
     if (!ethAmount) return;
 
@@ -48,6 +131,26 @@ export default function PresalePage() {
       value: parseEther(ethAmount),
     });
   };
+/*
+=========================================
+LIVE PURCHASE ESTIMATION
+=========================================
+*/
+
+  const estimatedSET =
+    phase && ethAmount
+      ? Number(ethAmount) * Number(phase.rate)
+      : 0;
+
+  const minimumETH =
+    summary
+      ? Number(summary[4]) / 1e18
+      : 0;
+
+  const maximumETH =
+    summary
+      ? Number(summary[5]) / 1e18
+      : 0;
 
   const fadeUp = {
     initial: { opacity: 0, y: 100 },
@@ -282,67 +385,6 @@ export default function PresalePage() {
 
       </section>
 
-      {/* ================= SOCIALS ================= */}
-      <section className="relative z-10 py-20 px-6 max-w-5xl mx-auto">
-
-        <motion.div
-          {...fadeUp}
-          className="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl p-10 text-center"
-        >
-
-          <h2 className="text-4xl font-bold mb-8">
-            Official Social Channels
-          </h2>
-
-          <p className="text-gray-400 max-w-2xl mx-auto mb-12">
-            Follow SocialEdger across all official platforms for
-            ecosystem announcements, governance updates,
-            presale information, and community events.
-          </p>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-
-            <a
-              href="#"
-              className="rounded-2xl border border-cyan-500/20 bg-cyan-500/10 px-6 py-5 hover:scale-105 transition"
-            >
-              <div className="text-cyan-400 text-xl font-semibold">
-                X / Twitter
-              </div>
-            </a>
-
-            <a
-              href="#"
-              className="rounded-2xl border border-purple-500/20 bg-purple-500/10 px-6 py-5 hover:scale-105 transition"
-            >
-              <div className="text-purple-400 text-xl font-semibold">
-                Telegram
-              </div>
-            </a>
-
-            <a
-              href="#"
-              className="rounded-2xl border border-pink-500/20 bg-pink-500/10 px-6 py-5 hover:scale-105 transition"
-            >
-              <div className="text-pink-400 text-xl font-semibold">
-                Discord
-              </div>
-            </a>
-
-            <a
-              href="#"
-              className="rounded-2xl border border-green-500/20 bg-green-500/10 px-6 py-5 hover:scale-105 transition"
-            >
-              <div className="text-green-400 text-xl font-semibold">
-                Medium
-              </div>
-            </a>
-
-          </div>
-
-        </motion.div>
-
-      </section>
 
       {/* ================= TOKEN FLOW ================= */}
       <section className="relative z-10 py-32 px-6 max-w-6xl mx-auto">
@@ -478,18 +520,85 @@ export default function PresalePage() {
 
           <div className="grid md:grid-cols-2 gap-10 mb-10">
 
+          <div className="grid md:grid-cols-3 gap-6 mb-10">
+
+            <div className="rounded-2xl bg-black/30 border border-white/10 p-5">
+
+              <p className="text-gray-400 text-sm">
+                Total ETH Raised
+              </p>
+
+              <p className="text-2xl font-bold mt-2">
+                {summary
+                  ? `${Number(summary[1]) / 1e18} ETH`
+                  : "Loading..."}
+              </p>
+
+            </div>
+
+            <div className="rounded-2xl bg-black/30 border border-white/10 p-5">
+
+              <p className="text-gray-400 text-sm">
+                Participants
+              </p>
+
+              <p className="text-2xl font-bold mt-2">
+                {summary
+                  ? Number(summary[3])
+                  : "Loading..."}
+              </p>
+
+            </div>
+
+            <div className="rounded-2xl bg-black/30 border border-white/10 p-5">
+
+              <p className="text-gray-400 text-sm">
+                Remaining SET
+              </p>
+
+              <p className="text-2xl font-bold mt-2">
+                {remaining
+                  ? (Number(remaining) / 1e18).toLocaleString()
+                  : "Loading..."}
+              </p>
+
+            </div>
+
+          </div>          
+
             <div>
               <p className="text-gray-400">Token Price</p>
               <p className="text-2xl font-semibold">
-                1 ETH = 1000 SET
-              </p>
+                {phase
+                  ? `1 ETH = ${phase.rate.toString()} SET`
+                  : "Loading..."}
+              </p>             
             </div>
 
             <div>
               <p className="text-gray-400">Presale Phase</p>
+
               <p className="text-2xl font-semibold">
-                Phase 1
+
+                {phase
+                  ? phase.name
+                  : "Loading..."}
+
               </p>
+
+              {phase && (
+
+                <span
+                  className={`inline-block mt-2 rounded-full px-3 py-1 text-xs font-semibold ${
+                    phase.active
+                      ? "bg-green-500/20 text-green-400"
+                      : "bg-red-500/20 text-red-400"
+                  }`}
+                >
+                  {phase.active ? "ACTIVE" : "INACTIVE"}
+                </span>
+
+              )}
             </div>
 
             <div>
@@ -503,9 +612,10 @@ export default function PresalePage() {
               <p className="text-gray-400">Your SET Balance</p>
               <p className="text-2xl font-semibold">
                 {tokenBalance
-                  ? Number(tokenBalance) / 1e18
-                  : 0} SET
-              </p>
+                  ? (Number(tokenBalance) / 1e18).toLocaleString()
+                  : "0"}{" "}
+                SET
+              </p>              
             </div>
 
           </div>
@@ -520,6 +630,29 @@ export default function PresalePage() {
 
             <div className="space-y-6">
 
+              {participant && (
+
+                <div className="rounded-xl border border-cyan-500/20 bg-cyan-500/10 p-5 mb-6">
+
+                  <p className="text-cyan-400 font-semibold">
+
+                    {participant[0]
+                      ? "You have already participated in this presale."
+                      : "This wallet has not participated yet."}
+
+                  </p>
+
+                  <p className="text-gray-300 mt-2">
+
+                    ETH Spent:{" "}
+                    {Number(participant[1]) / 1e18}
+
+                  </p>
+
+                </div>
+
+              )}              
+
               <input
                 type="number"
                 placeholder="Enter ETH amount"
@@ -530,15 +663,72 @@ export default function PresalePage() {
                 className="w-full bg-black border border-gray-700 rounded-xl px-6 py-4"
               />
 
+              <div className="rounded-xl border border-cyan-500/20 bg-cyan-500/10 p-5">
+
+                <div className="flex justify-between">
+
+                  <span className="text-gray-400">
+                    Estimated SET
+                  </span>
+
+                  <span className="font-bold text-cyan-400">
+
+                    {estimatedSET.toLocaleString()}
+
+                  </span>
+
+                </div>
+
+                <div className="mt-3 flex justify-between text-sm">
+
+                  <span className="text-gray-400">
+
+                    Minimum:
+                    {" "}
+                    {minimumETH} ETH
+
+                  </span>
+
+                  <span className="text-gray-400">
+
+                    Maximum:
+                    {" "}
+                    {maximumETH} ETH
+
+                  </span>
+
+                </div>
+
+              </div>
+
               <button
                 onClick={buyTokens}
-                disabled={txLoading}
-                className="w-full py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-pink-500 hover:scale-[1.02] transition"
+                disabled={
+                  txLoading ||
+                  !ethAmount ||
+                  Number(ethAmount) < minimumETH ||
+                  Number(ethAmount) > maximumETH
+                }
+                className="w-full py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-pink-500 hover:scale-[1.02] transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
+
                 {txLoading
                   ? "Processing..."
                   : "Buy SET Tokens"}
               </button>
+
+              {ethAmount &&
+                (Number(ethAmount) < minimumETH ||
+                  Number(ethAmount) > maximumETH) && (
+
+                <p className="text-red-400 text-center">
+
+                  Purchase amount must be between{" "}
+                  {minimumETH} ETH and {maximumETH} ETH.
+
+                </p>
+
+              )}              
 
               {isSuccess && (
                 <p className="text-green-400 text-center">

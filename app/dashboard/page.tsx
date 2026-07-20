@@ -1,220 +1,445 @@
 "use client";
 
-import Link from "next/link";
-import { useAccount, useConnect, useDisconnect } from "wagmi";
-import { injected } from "wagmi/connectors";
 import { useEffect, useState } from "react";
+import Link from "next/link";
+import {
+  useAccount,
+  useConnect,
+  useDisconnect,
+} from "wagmi";
+import { injected } from "wagmi/connectors";
+
+import ProfileSummary from "./components/ProfileSummary";
+import ReputationCard from "./components/ReputationCard";
+import StatsGrid from "./components/StatsGrid";
+import QuickActions from "./components/QuickActions";
+import ActivityTimeline from "./components/ActivityTimeline";
+import MiningCard from "./components/MiningCard";
+import RewardsCard from "./components/RewardsCard";
 
 const API =
-process.env.NEXT_PUBLIC_BACKEND_URL ||
-"http://localhost:5000";
+  process.env.NEXT_PUBLIC_BACKEND_URL ||
+  "http://localhost:5000";
 
 export default function DashboardHome() {
 
-const { address, isConnected } = useAccount();
-const { connect } = useConnect();
-const { disconnect } = useDisconnect();
+  const { address, isConnected } =
+    useAccount();
 
-const [agreementExists, setAgreementExists] = useState(false);
-const [checkingAgreement, setCheckingAgreement] = useState(false);
+  const { connect } =
+    useConnect();
 
-useEffect(() => {
+  const { disconnect } =
+    useDisconnect();
 
-if (!address) return;
+  const [agreementExists, setAgreementExists] =
+    useState(false);
 
-const checkAgreement = async () => {
+  const [checkingAgreement, setCheckingAgreement] =
+    useState(false);
 
-try {
+  const [loadingReputation, setLoadingReputation] =
+    useState(false);
 
-setCheckingAgreement(true);
+  const [reputation, setReputation] =
+    useState<any>(null);
 
-const res = await fetch(
-  `${API}/api/agreement/check/${address}`
-);
+  /*
+  ======================================
+  LOAD REPUTATION
+  ======================================
+  */
 
-const data = await res.json();
+  useEffect(() => {
 
-setAgreementExists(data.exists);
+    if (!address) return;
 
-} catch (err) {
+    const loadReputation =
+      async () => {
 
-console.error("Agreement check failed:", err);
+        try {
 
-} finally {
+          setLoadingReputation(true);
 
-setCheckingAgreement(false);
+          const res =
+            await fetch(
+              `${API}/api/reputation/${address}`
+            );
 
-}
+          const data =
+            await res.json();
 
-};
+          setReputation(data);
 
-checkAgreement();
+        } catch (err) {
 
-}, [address]);
+          console.error(
+            "Failed to load reputation",
+            err
+          );
 
-return (
+        } finally {
 
-<main className="min-h-screen section max-w-6xl mx-auto">  <h1 className="text-4xl font-bold mb-6">
-    Member Dashboard
-  </h1>{/* Wallet Section */}
+          setLoadingReputation(false);
 
-  <div className="glass-card p-6 mb-10"><h2 className="text-xl font-semibold mb-3">
-  Wallet Connection
-</h2>
+        }
 
-{!isConnected ? (
+      };
 
-  <button
-    onClick={() => connect({ connector: injected() })}
-    className="btn-primary"
-  >
-    Connect MetaMask
-  </button>
+    loadReputation();
 
-) : (
+  }, [address]);
 
-  <div className="space-y-3">
+  /*
+  ======================================
+  LOAD AGREEMENT
+  ======================================
+  */
 
-    <p className="text-gray-300">
-      Connected Wallet:
-    </p>
+  useEffect(() => {
 
-    <p className="text-purple-400 font-mono break-all">
-      {address}
-    </p>
+    if (!address) return;
 
-    <button
-      onClick={() => disconnect()}
-      className="btn-primary"
-    >
-      Disconnect
-    </button>
+    const checkAgreement =
+      async () => {
 
-  </div>
+        try {
 
-)}
+          setCheckingAgreement(true);
 
-  </div>{/* INFTO Agreement */}
-{isConnected && (
+          const res =
+            await fetch(
+              `${API}/api/agreement/check/${address}`
+            );
 
-<div className="glass-card p-6 mb-10">
+          const data =
+            await res.json();
 
-  <h2 className="text-xl font-semibold mb-3">
-    INFTO Agreement
-  </h2>
+          setAgreementExists(
+            data.exists
+          );
 
-  {checkingAgreement ? (
+        } catch (err) {
 
-    <p className="text-gray-400">
-      Checking agreement status...
-    </p>
+          console.error(err);
 
-  ) : agreementExists ? (
+        } finally {
 
-    <div className="space-y-4">
+          setCheckingAgreement(false);
 
-      <p className="text-green-400">
-        Agreement Signed ✅
-      </p>
+        }
 
-      <a
-        href={`${API}/api/agreement/download/${address}`}
-        target="_blank"
-        className="btn-primary inline-block"
-      >
-        Download INFTO Agreement
-      </a>
+      };
 
-    </div>
+    checkAgreement();
 
-  ) : (
+  }, [address]);
 
-    <p className="text-yellow-400">
-      You have not signed the INFTO agreement yet.
-      This will be required when minting your membership NFT.
-    </p>
+  /*
+  ======================================
+  WALLET NOT CONNECTED
+  ======================================
+  */
 
-  )}
+  if (!isConnected) {
 
-</div>
+    return (
 
-)}
+      <main className="min-h-screen section max-w-6xl mx-auto">
 
-{/* Vault Navigation */}
+        <div className="glass-card p-10 text-center">
 
-  <div className="grid md:grid-cols-2 gap-10 mb-10"><div className="glass-card p-8">
+          <h1 className="text-5xl font-bold mb-6">
 
-  <h2 className="text-2xl font-semibold mb-3">
-    Primary Vault
-  </h2>
+            SocialEdger
+            Command Center
 
-  <p className="text-gray-300 mb-6">
-    Manage NFT membership ownership, wallet identity,
-    and full ecosystem access.
-  </p>
+          </h1>
 
-  <Link
-    href="/dashboard/primary-vault"
-    className="btn-primary inline-block"
-  >
-    Open Vault
-  </Link>
+          <p className="text-gray-400 mb-8">
 
-</div>
+            Connect your wallet to
+            access your contributor
+            dashboard.
 
-<div className="glass-card p-8">
+          </p>
 
-  <h2 className="text-2xl font-semibold mb-3">
-    Secondary Vault
-  </h2>
+          <button
+            onClick={() =>
+              connect({
+                connector: injected(),
+              })
+            }
+            className="btn-primary"
+          >
 
-  <p className="text-gray-300 mb-6">
-    Access shared membership privileges linked to
-    a primary NFT owner.
-  </p>
+            Connect MetaMask
 
-  <Link
-    href="/dashboard/secondary-vault"
-    className="btn-primary inline-block"
-  >
-    Access Vault
-  </Link>
+          </button>
 
-</div>
+        </div>
 
-  </div>{/* Mining Section */}
-{isConnected && (
+      </main>
 
-<div className="glass-card p-8">
+    );
 
-  <h2 className="text-2xl font-semibold mb-3">
-    Token Mining
-  </h2>
+  }
 
-  <p className="text-gray-300 mb-6">
-    Mine SocialEdger tokens using your wallet.
-    Membership NFT holders receive increased mining power.
-  </p>
+  return (
 
-  <ul className="text-gray-400 mb-6 list-disc list-inside">
+    <main className="min-h-screen section max-w-7xl mx-auto">
 
-    <li>Primary Member: 5× Mining Power</li>
-    <li>Secondary Member: 2× Mining Power</li>
-    <li>Standard User: 1× Mining Power</li>
+      {/* PART 2 CONTINUES HERE */}
 
-  </ul>
+      {/* PROFILE SUMMARY */}
 
-  <Link
-    href="/dashboard/mining"
-    className="btn-primary inline-block"
-  >
-    Open Mining Panel
-  </Link>
+      <ProfileSummary
+        wallet={address}
+        role={reputation?.role}
+        contributor={reputation?.contributor}
+        level={reputation?.level}
+        badges={reputation?.badges}
+      />
 
-</div>
+      {/* LOADING */}
 
-)}
+      {loadingReputation && (
 
-</main>);
+        <div className="glass-card p-8 mb-8 text-center">
+
+          <h2 className="text-2xl font-semibold">
+            Loading your ecosystem...
+          </h2>
+
+          <p className="text-gray-400 mt-3">
+            Fetching contributor reputation,
+            statistics and rewards.
+          </p>
+
+        </div>
+
+      )}
+
+      {/* INFTO AGREEMENT */}
+
+      {!loadingReputation && (
+
+        <div className="glass-card p-6 mb-8">
+
+          <div className="flex justify-between items-center flex-wrap gap-4">
+
+            <div>
+
+              <h2 className="text-xl font-semibold">
+                INFTO Agreement
+              </h2>
+
+              {checkingAgreement ? (
+
+                <p className="text-gray-400 mt-2">
+                  Checking agreement...
+                </p>
+
+              ) : agreementExists ? (
+
+                <p className="text-green-400 mt-2">
+                  Agreement Signed ✅
+                </p>
+
+              ) : (
+
+                <p className="text-yellow-400 mt-2">
+                  Agreement not signed yet.
+                </p>
+
+              )}
+
+            </div>
+
+            {agreementExists && (
+
+              <a
+                href={`${API}/api/agreement/download/${address}`}
+                target="_blank"
+                className="btn-primary"
+              >
+
+                Download Agreement
+
+              </a>
+
+            )}
+
+          </div>
+
+        </div>
+
+      )}
+
+      {/* REPUTATION + STATS */}
+
+      {!loadingReputation && (
+
+        <div className="grid xl:grid-cols-2 gap-8 mb-8">
+
+          <ReputationCard
+            totalReputation={
+              reputation?.totalReputation || 0
+            }
+            level={
+              reputation?.level || {
+                level: 1,
+                title: "New Contributor",
+                progress: 0,
+                reputationRemaining: 250,
+                nextLevel: 250,
+                maxLevel: false,
+              }
+            }
+            daoVotingWeight={
+              reputation?.daoVotingWeight || 1
+            }
+            breakdown={
+              reputation?.breakdown || {
+                membership: 0,
+                contributor: 0,
+                opportunities: 0,
+                rewards: 0,
+              }
+            }
+          />
+
+          <StatsGrid
+            contributor={
+              reputation?.contributor
+            }
+          />
+
+        </div>
+
+      )}
+
+      {/* QUICK ACTIONS */}
+
+      <div className="mb-8">
+
+        <QuickActions />
+
+      </div>
+
+      {/* PART 3 CONTINUES BELOW */}
+
+      {/* ACTIVITY + MINING */}
+
+      {!loadingReputation && (
+
+        <div className="grid xl:grid-cols-2 gap-8 mb-8">
+
+          <ActivityTimeline
+            history={reputation?.history || []}
+          />
+
+          <MiningCard
+            multiplier={
+              reputation?.role === "Primary Member"
+                ? 5
+                : reputation?.role === "Secondary Member"
+                ? 2
+                : 1
+            }
+            todayMined={0}
+            totalMined={0}
+          />
+
+        </div>
+
+      )}
+
+      {/* REWARDS */}
+
+      {!loadingReputation && (
+
+        <div className="mb-8">
+
+          <RewardsCard
+            contributor={
+              reputation?.contributor
+            }
+          />
+
+        </div>
+
+      )}
+
+      {/* WALLET */}
+
+      <div className="glass-card p-8">
+
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+
+          <div>
+
+            <h2 className="text-2xl font-bold mb-3">
+              Connected Wallet
+            </h2>
+
+            <p className="text-gray-400 break-all">
+
+              {address}
+
+            </p>
+
+          </div>
+
+          <div className="flex flex-wrap gap-4">
+
+            <Link
+              href="/dashboard/primary-vault"
+              className="btn-primary"
+            >
+              Primary Vault
+            </Link>
+
+            <Link
+              href="/dashboard/contributor-profile"
+              className="btn-primary"
+            >
+              My Profile
+            </Link>
+
+            <button
+              onClick={() => disconnect()}
+              className="px-6 py-3 rounded-xl border border-red-500/40 bg-red-500/10 text-red-400 hover:bg-red-500/20 transition"
+            >
+              Disconnect Wallet
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      {/* FOOTER */}
+
+      <div className="text-center py-12">
+
+        <p className="text-gray-500">
+
+          SocialEdger Command Center
+
+        </p>
+
+        <p className="text-gray-600 text-sm mt-2">
+
+          Where Reputation Meets Opportunity
+
+        </p>
+
+      </div>
+
+    </main>
+
+  );
 
 }
