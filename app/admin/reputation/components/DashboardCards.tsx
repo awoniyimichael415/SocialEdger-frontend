@@ -1,15 +1,7 @@
-type Dashboard = {
-  totalContributors: number;
-  verifiedContributors: number;
-  premiumMembers: number;
-  totalReputation: number;
-  averageReputation: number;
-  totalBadges: number;
-  totalVotingWeight: number;
-};
+import type { DashboardData } from "@/src/lib/reputationApi";
 
 type Props = {
-  dashboard: Dashboard | null;
+  dashboard: DashboardData | null;
 };
 
 const cards = [
@@ -65,7 +57,7 @@ export default function DashboardCards({
           </p>
 
           <h2 className="mt-4 text-3xl font-bold text-white">
-            {dashboard?.[card.key] ?? 0}
+            {Number(dashboard?.[card.key] ?? 0).toLocaleString()}
           </h2>
         </div>
       ))}
