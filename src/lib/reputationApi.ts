@@ -12,12 +12,60 @@ export interface Contributor {
   displayName?: string;
   fullName?: string;
   name?: string;
+  username?: string;
+  profileImage?: string;
+  membershipType?: string;
+  accountStatus?: string;
+  verified?: boolean;
+  totalReputation?: number;
+  contributorLevel?: number;
+  daoVotingWeight?: number;
   reputation?: number;
   score?: number;
   rank?: number;
-  verified?: boolean;
   badges?: any[];
   [key: string]: any;
+}
+
+export interface ReputationDetails {
+  wallet: string;
+  role: string;
+  membership: {
+    role: string;
+    score: number;
+  };
+  totalReputation: number;
+  level: {
+    level: number;
+    title: string;
+  };
+  badges: {
+    name: string;
+    description: string;
+  }[];
+  contributor: {
+    displayName: string;
+    username: string;
+    walletAddress: string;
+    profileImage: string;
+    membershipType: string;
+    verified: boolean;
+    accountStatus: string;
+    country: string;
+    category: string;
+  };
+  profileCompletion: number;
+  daoVotingWeight: number;
+  breakdown: {
+    membership: number;
+    contributor: number;
+    opportunities: number;
+    rewards: number;
+  };
+  history: {
+    title: string;
+    reputation: number;
+  }[];
 }
 
 async function request<T>(url: string): Promise<T> {
@@ -61,8 +109,8 @@ const ReputationApi = {
 
   getReputation(
     wallet: string
-  ): Promise<Contributor> {
-    return request<Contributor>(
+  ): Promise<ReputationDetails> {
+    return request<ReputationDetails>(
       `/api/reputation/${wallet}`
     );
   },
