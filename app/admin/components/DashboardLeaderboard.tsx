@@ -2,128 +2,109 @@
 
 import { useEffect, useState } from "react";
 
-export default function DashboardLeaderboard() {
+const API =
+  process.env.NEXT_PUBLIC_BACKEND_URL ||
+  "http://localhost:5000";
 
-  const [contributors, setContributors] = useState<any[]>([]);
+interface Contributor {
+  _id: string;
+  displayName: string;
+  username: string;
+  walletAddress: string;
+  totalReputation: number;
+  verified: boolean;
+}
+
+export default function DashboardLeaderboard() {
+  const [contributors, setContributors] = useState<Contributor[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-
     loadLeaderboard();
-
   }, []);
 
   async function loadLeaderboard() {
-
     try {
-
       const response = await fetch(
-
-        "https://api.socialedger.io/api/contributors"
-
+        `${API}/api/contributors`
       );
 
-      const data = await response.json();
+      if (!response.ok) {
+        throw new Error("Failed to load contributors");
+      }
+
+      const data: Contributor[] = await response.json();
 
       const sorted = [...data].sort(
-
         (a, b) =>
-
-          (b.reputationScore || 0) -
-
-          (a.reputationScore || 0)
-
+          (b.totalReputation || 0) -
+          (a.totalReputation || 0)
       );
 
       setContributors(sorted.slice(0, 10));
-
     } catch (error) {
-
-      console.error(error);
-
+      console.error(
+        "Leaderboard error:",
+        error
+      );
+    } finally {
+      setLoading(false);
     }
-
   }
 
   return (
-
     <section className="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-8">
 
       <h2 className="text-2xl font-bold mb-8">
-
         Top Contributors
-
       </h2>
 
-      {contributors.length === 0 ? (
-
+      {loading ? (
         <p className="text-gray-400">
-
-          No contributor data available.
-
+          Loading leaderboard...
         </p>
-
+      ) : contributors.length === 0 ? (
+        <p className="text-gray-400">
+          No contributor data available.
+        </p>
       ) : (
-
         <div className="space-y-5">
 
           {contributors.map((user, index) => (
-
             <div
-
-              key={user._id || index}
-
+              key={user._id}
               className="flex items-center justify-between border-b border-white/5 pb-4"
-
             >
-
               <div>
+                <p className="font-semibold flex items-center gap-2">
+                  #{index + 1} {user.displayName}
 
-                <p className="font-semibold">
-
-                  #{index + 1}{" "}
-
-                  {user.fullName ||
-
-                    user.name ||
-
-                    "Unknown Contributor"}
-
+                  {user.verified && (
+                    <span className="text-cyan-400">
+                      ✔
+                    </span>
+                  )}
                 </p>
 
                 <p className="text-sm text-gray-500">
-
-                  {user.walletAddress || "No Wallet"}
-
+                  @{user.username}
                 </p>
-
               </div>
 
               <div className="text-right">
-
-                <p className="text-cyan-400 font-bold">
-
-                  {user.reputationScore || 0}
-
+                <p className="text-cyan-400 font-bold text-lg">
+                  {user.totalReputation ?? 0}
                 </p>
 
                 <p className="text-xs text-gray-500">
-
                   Reputation
-
                 </p>
-
               </div>
-
             </div>
-
           ))}
 
         </div>
-
       )}
-
     </section>
-
   );
-
 }
