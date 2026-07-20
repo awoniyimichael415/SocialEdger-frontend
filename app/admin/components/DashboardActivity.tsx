@@ -8,11 +8,13 @@ type ActivityItem = {
   type: string;
 };
 
-const API_BASE =
-  process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
+const API =
+  process.env.NEXT_PUBLIC_BACKEND_URL ||
+  "http://localhost:5000";
 
 export default function DashboardActivity() {
   const [activities, setActivities] = useState<ActivityItem[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     loadActivities();
@@ -29,20 +31,28 @@ export default function DashboardActivity() {
         rewardRes,
         opportunityRes,
       ] = await Promise.all([
-        fetch(`${API_BASE}/api/contributors`, {
+        fetch(`${API}/api/contributors`, {
           cache: "no-store",
         }),
-        fetch(`${API_BASE}/api/rewards/admin/transactions`, {
+        fetch(`${API}/api/rewards/admin/transactions`, {
           cache: "no-store",
         }),
-        fetch(`${API_BASE}/api/opportunities`, {
+        fetch(`${API}/api/opportunities`, {
           cache: "no-store",
         }),
       ]);
 
-      const contributors = await contributorRes.json();
-      const rewards = await rewardRes.json();
-      const opportunities = await opportunityRes.json();
+      const contributors = contributorRes.ok
+        ? await contributorRes.json()
+        : [];
+
+      const rewards = rewardRes.ok
+        ? await rewardRes.json()
+        : [];
+
+      const opportunities = opportunityRes.ok
+        ? await opportunityRes.json()
+        : [];
 
       const feed: ActivityItem[] = [];
 
@@ -50,7 +60,7 @@ export default function DashboardActivity() {
         ?.slice(0, 3)
         .forEach((item: any) => {
           feed.push({
-            title: `${item.fullName || item.name} joined as a contributor`,
+            title: `${item.displayName} joined the contributor network`,
             time: "Recently",
             type: "Contributor",
           });
@@ -60,7 +70,7 @@ export default function DashboardActivity() {
         ?.slice(0, 3)
         .forEach((item: any) => {
           feed.push({
-            title: `Reward distributed (${item.type})`,
+            title: `Reward distributed (${item.type || "Reward"})`,
             time: "Recently",
             type: "Reward",
           });
@@ -78,8 +88,13 @@ export default function DashboardActivity() {
 
       setActivities(feed);
     } catch (error) {
-      console.error("Failed to load dashboard activity:", error);
+      console.error(
+        "Failed to load dashboard activity:",
+        error
+      );
       setActivities([]);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -89,13 +104,17 @@ export default function DashboardActivity() {
         Live Ecosystem Activity
       </h2>
 
-      <div className="space-y-6">
-        {activities.length === 0 ? (
-          <p className="text-gray-400">
-            No recent activity available.
-          </p>
-        ) : (
-          activities.map((activity, index) => (
+      {loading ? (
+        <p className="text-gray-400">
+          Loading activity...
+        </p>
+      ) : activities.length === 0 ? (
+        <p className="text-gray-400">
+          No recent activity available.
+        </p>
+      ) : (
+        <div className="space-y-6">
+          {activities.map((activity, index) => (
             <div
               key={index}
               className="flex gap-4 border-b border-white/5 pb-5"
@@ -113,9 +132,9 @@ export default function DashboardActivity() {
                 </div>
               </div>
             </div>
-          ))
-        )}
-      </div>
+          ))}
+        </div>
+      )}
     </section>
   );
 }
