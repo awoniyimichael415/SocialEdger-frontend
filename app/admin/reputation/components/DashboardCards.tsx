@@ -9,7 +9,7 @@ type Dashboard = {
 };
 
 type Props = {
-  dashboard: Dashboard;
+  dashboard: Dashboard | null;
 };
 
 const cards = [
@@ -65,7 +65,7 @@ export default function DashboardCards({
           </p>
 
           <h2 className="mt-4 text-3xl font-bold text-white">
-            {dashboard[card.key]}
+            {dashboard?.[card.key] ?? 0}
           </h2>
         </div>
       ))}
