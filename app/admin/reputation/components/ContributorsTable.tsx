@@ -1,19 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-
-type Contributor = {
-  _id: string;
-  walletAddress: string;
-  displayName: string;
-  username: string;
-  membershipType: string;
-  verified: boolean;
-  accountStatus: string;
-  totalReputation: number;
-  contributorLevel: number;
-  daoVotingWeight: number;
-};
+import type { Contributor } from "@/src/lib/reputationApi";
 
 type Props = {
   contributors: Contributor[];
@@ -32,10 +20,23 @@ export default function ContributorsTable({
     const keyword = search.toLowerCase();
 
     return contributors.filter((user) => {
+      const displayName =
+        user.displayName ||
+        user.fullName ||
+        user.name ||
+        "";
+
+      const username = user.username || "";
+
+      const wallet =
+        user.walletAddress ||
+        user.wallet ||
+        "";
+
       return (
-        user.displayName.toLowerCase().includes(keyword) ||
-        user.username.toLowerCase().includes(keyword) ||
-        user.walletAddress.toLowerCase().includes(keyword)
+        displayName.toLowerCase().includes(keyword) ||
+        username.toLowerCase().includes(keyword) ||
+        wallet.toLowerCase().includes(keyword)
       );
     });
   }, [contributors, search]);
@@ -79,64 +80,82 @@ export default function ContributorsTable({
           </thead>
 
           <tbody>
-            {filtered.map((user) => (
-              <tr
-                key={user._id}
-                className="border-b border-zinc-800 hover:bg-zinc-800/40"
-              >
-                <td className="px-6 py-5">
-                  <div>
-                    <div className="font-semibold text-white">
-                      {user.displayName}
+            {filtered.map((user, index) => {
+              const displayName =
+                user.displayName ||
+                user.fullName ||
+                user.name ||
+                "Unknown";
+
+              const username =
+                user.username || "unknown";
+
+              const wallet =
+                user.walletAddress ||
+                user.wallet ||
+                "";
+
+              return (
+                <tr
+                  key={user._id ?? wallet ?? index}
+                  className="border-b border-zinc-800 hover:bg-zinc-800/40"
+                >
+                  <td className="px-6 py-5">
+                    <div>
+                      <div className="font-semibold text-white">
+                        {displayName}
+                      </div>
+
+                      <div className="text-sm text-zinc-400">
+                        @{username}
+                      </div>
+
+                      <div className="text-xs text-zinc-500">
+                        {wallet
+                          ? `${wallet.slice(0, 8)}...${wallet.slice(-6)}`
+                          : "No wallet"}
+                      </div>
                     </div>
+                  </td>
 
-                    <div className="text-sm text-zinc-400">
-                      @{user.username}
-                    </div>
+                  <td className="px-6 py-5">
+                    {user.membershipType ?? "-"}
+                  </td>
 
-                    <div className="text-xs text-zinc-500">
-                      {user.walletAddress.slice(0, 8)}...
-                      {user.walletAddress.slice(-6)}
-                    </div>
-                  </div>
-                </td>
+                  <td className="px-6 py-5">
+                    {user.accountStatus ?? "-"}
+                  </td>
 
-                <td className="px-6 py-5">
-                  {user.membershipType}
-                </td>
+                  <td className="px-6 py-5">
+                    {user.verified ? "Yes" : "No"}
+                  </td>
 
-                <td className="px-6 py-5">
-                  {user.accountStatus}
-                </td>
+                  <td className="px-6 py-5">
+                    {user.totalReputation ??
+                      user.reputation ??
+                      0}
+                  </td>
 
-                <td className="px-6 py-5">
-                  {user.verified ? "Yes" : "No"}
-                </td>
+                  <td className="px-6 py-5">
+                    {user.contributorLevel ?? 0}
+                  </td>
 
-                <td className="px-6 py-5">
-                  {user.totalReputation}
-                </td>
+                  <td className="px-6 py-5">
+                    {user.daoVotingWeight ?? 0}
+                  </td>
 
-                <td className="px-6 py-5">
-                  {user.contributorLevel}
-                </td>
-
-                <td className="px-6 py-5">
-                  {user.daoVotingWeight}
-                </td>
-
-                <td className="px-6 py-5 text-right">
-                  <button
-                    onClick={() =>
-                      onSelect(user.walletAddress)
-                    }
-                    className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
-                  >
-                    View Details
-                  </button>
-                </td>
-              </tr>
-            ))}
+                  <td className="px-6 py-5 text-right">
+                    <button
+                      onClick={() => onSelect(wallet)}
+                      disabled={!wallet}
+                      className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      View Details
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
 
             {filtered.length === 0 && (
               <tr>
